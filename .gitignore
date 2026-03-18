@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+.pytest_cache/
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# QGIS plugin build artifacts
+qgis-tools/*.zip
+
+# Generated plugin output (user-created migrations land here; keep local only)
+# The qgis-tools/ folder itself is committed (contains README.md)
+qgis-tools/*/
+!qgis-tools/README.md
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+*.swp
+*.swo
