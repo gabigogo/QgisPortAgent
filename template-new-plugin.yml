@@ -1,0 +1,211 @@
+# ============================================================
+# QGIS Plugin Brief — Input Template for Plugin Builder Agent
+# ============================================================
+# Fill in the sections below, then attach this file to your
+# agent session. The agent will read it and proceed directly
+# to architecture design, asking follow-up questions only for
+# fields left as null.
+#
+# MINIMUM REQUIRED: sections 1, 2, 3, and 4.
+# Everything else has sensible defaults.
+# ============================================================
+
+# ------------------------------------------------------------
+# 1. IDENTITY
+# ------------------------------------------------------------
+identity:
+  plugin_name: null        # lowercase, underscores, no spaces — e.g. viewshed_heatmap
+  display_name: null       # shown in QGIS Plugin Manager — e.g. "Viewshed Heatmap"
+  description: null        # one sentence describing what the plugin does
+  author: null             # e.g. "Jane Smith"
+  organisation: null       # e.g. "Acme GIS Ltd" — or null if individual
+  email: null              # contact email for metadata.txt
+
+# ------------------------------------------------------------
+# 2. PROBLEM & PURPOSE
+# ------------------------------------------------------------
+purpose:
+  problem_statement: null
+  # What real-world problem does this plugin solve?
+  # Example:
+  #   "Field ecologists collect GPS track logs and need a single-click tool
+  #    that snaps points to the nearest road and exports a distance summary
+  #    to CSV — currently a 30-minute manual process."
+
+# ------------------------------------------------------------
+# 3. PLUGIN ARCHETYPE
+# ------------------------------------------------------------
+# Set exactly one archetype to true, or set hybrid: true and
+# list the combined archetypes under hybrid_components.
+#
+#   processing_provider  — batch geoprocessing via the Processing Toolbox
+#   interactive_tool     — custom map interaction (click, draw, measure)
+#   automation_workflow  — task automation, batch runs, project management
+#   visualization        — custom renderers, symbology, dynamic styling
+#
+archetype:
+  processing_provider: false
+  interactive_tool: false
+  automation_workflow: false
+  visualization: false
+  hybrid: false
+
+  hybrid_components: []
+  # List archetypes if hybrid: true, e.g.:
+  #   - processing_provider
+  #   - visualization
+
+# ------------------------------------------------------------
+# 4. GEOPROCESSING WORKFLOW
+# ------------------------------------------------------------
+# Define the step-by-step business logic of the plugin.
+# Each step describes one discrete operation in the processing chain.
+# The agent will use this to implement the core algorithm(s).
+#
+# Fields per step:
+#   step        — sequential number
+#   description — what happens in plain English
+#   input       — data consumed at this step (layer name, field, parameter)
+#   output      — data produced at this step
+#   notes       — optional: edge cases, tolerances, spatial references, etc.
+#
+geoprocessing_workflow:
+  - step: 1
+    description: null
+    input: null
+    output: null
+    notes: null
+
+  - step: 2
+    description: null
+    input: null
+    output: null
+    notes: null
+
+  - step: 3
+    description: null
+    input: null
+    output: null
+    notes: null
+
+# Add or remove steps as needed.
+
+# ------------------------------------------------------------
+# 5. DATA
+# ------------------------------------------------------------
+data:
+  inputs:
+    - data_type: null      # e.g. Vector — Points / Raster — DEM / Table
+      formats: []          # e.g. [GeoPackage, Shapefile, GeoTIFF]
+      notes: null
+
+  outputs:
+    - data_type: null      # e.g. Vector — Polygons / Raster / CSV
+      formats: []          # e.g. [GeoPackage, CSV]
+      notes: null
+
+# ------------------------------------------------------------
+# 6. KEY FEATURES
+# ------------------------------------------------------------
+# List features in priority order. priority: MVP | Future
+features:
+  - name: null
+    description: null
+    priority: MVP
+
+  - name: null
+    description: null
+    priority: MVP
+
+  - name: null
+    description: null
+    priority: Future
+
+# ------------------------------------------------------------
+# 7. CONSTRAINTS & NON-NEGOTIABLES
+# ------------------------------------------------------------
+# Hard constraints the agent must respect.
+# These override any default recommendations.
+constraints: []
+# Examples:
+#   - "Must work fully offline — no internet access during processing"
+#   - "Must not use any GPL-incompatible libraries"
+#   - "Must be compatible with QGIS 3.28 LTR as well as 3.44 LTR"
+
+# ------------------------------------------------------------
+# 8. USER INTERFACE
+# ------------------------------------------------------------
+# Default: processing_toolbox — the agent generates a standard
+# QGIS Processing algorithm dialog with auto-generated UI.
+# Only change this if you need something different.
+ui:
+  type: processing_toolbox   # processing_toolbox | modal_dialog | docked_panel | custom_map_tool
+  layout_description: null
+  # Optional: describe any specific UI requirements.
+  # Example:
+  #   "Docked panel with a layer selector, a distance threshold spin box,
+  #    a Run button, and a scrollable log area."
+
+# ------------------------------------------------------------
+# 9. TESTING
+# ------------------------------------------------------------
+testing:
+  enabled: true
+  test_data: null            # path to sample file, or null to use synthetic fixtures
+  # Defaults: pytest, 70% minimum coverage.
+  # Override below only if needed.
+  # minimum_coverage_pct: 70
+  # framework: pytest
+
+# ------------------------------------------------------------
+# 10. REFERENCE MATERIAL
+# ------------------------------------------------------------
+references: []
+# Optional links, files, or context to help the agent understand
+# the domain or expected behaviour.
+# Examples:
+#   - type: similar_plugin
+#     url: "https://github.com/example/similar-plugin"
+#   - type: sample_data
+#     path: "tests/data/sample.gpkg"
+#   - type: algorithm_spec
+#     url: "https://doi.org/10.xxxx/example"
+
+# ------------------------------------------------------------
+# 11. OPEN QUESTIONS
+# ------------------------------------------------------------
+# Anything you are unsure about — the agent will address these first.
+open_questions: []
+# Examples:
+#   - "Not sure whether batch or interactive processing is more appropriate"
+#   - "Unsure which output format best suits downstream GIS workflows"
+
+# ============================================================
+# -- ADVANCED (uncomment to use) --
+# ============================================================
+
+# ------------------------------------------------------------
+# EXTERNAL INTEGRATIONS
+# ------------------------------------------------------------
+# Uncomment and fill in if the plugin connects to external systems.
+#
+# integrations:
+#   - name: null           # e.g. OpenWeatherMap
+#     type: null           # REST API / PostgreSQL / Cloud Storage / Other
+#     auth_method: null    # API key via QSettings / OAuth2 / None
+#     notes: null
+
+# ------------------------------------------------------------
+# PERFORMANCE & SCALE
+# ------------------------------------------------------------
+# Uncomment if dataset size or processing mode is a concern.
+#
+# performance:
+#   typical_dataset_size: null   # e.g. "up to 50,000 features"
+#   maximum_dataset_size: null   # e.g. "500,000 features"
+#   processing_mode: null        # Interactive / Batch / Background
+#   real_time_requirements: null # None / Live GPS / Streaming sensor data
+
+# ============================================================
+# Template version: 1.1 — QGIS Plugin Builder Agent
+# ============================================================
