@@ -134,6 +134,12 @@ Generate:
 3. **`<plugin_name>_plugin.py`** — Main class implementing the QGIS plugin lifecycle
 4. **`requirements.txt`** — All Python dependencies with version constraints
 
+`metadata.txt` MUST include Qt6 compatibility when targeting modern QGIS builds:
+
+```ini
+supportsQt6=True
+```
+
 ### 2.2 Archetype-Specific Components
 
 | Archetype | Files to Generate |
@@ -351,6 +357,7 @@ Confirm all required fields are populated:
 
 - [ ] `name`
 - [ ] `qgisMinimumVersion`
+- [ ] `supportsQt6=True` (required for Qt6-based QGIS)
 - [ ] `description`
 - [ ] `version`
 - [ ] `author`

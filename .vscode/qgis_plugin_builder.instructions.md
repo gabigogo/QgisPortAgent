@@ -33,6 +33,20 @@ This workspace uses a structured approach to organize plugin development:
 - NEVER mix multiple plugins in a single directory.
 - NEVER write temporary files to the workspace root — use `QgsProcessing.TEMPORARY_OUTPUT`.
 - Follow QGIS Plugin Repository submission standards from the start.
+- For QGIS 3.40+ targets, ALWAYS include `supportsQt6=True` in `metadata.txt`.
+- Treat missing `supportsQt6=True` as a release blocker during packaging.
+
+### Metadata Compatibility Defaults
+
+When generating `metadata.txt`, always include:
+
+```ini
+qgisMinimumVersion=3.40
+supportsQt6=True
+hasProcessingProvider=True
+```
+
+If the project specifically targets QGIS 3.44 LTR, keep `qgisMinimumVersion=3.44` and still include `supportsQt6=True`.
 
 ---
 
