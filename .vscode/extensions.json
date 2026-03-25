@@ -1,0 +1,28 @@
+{
+    // VS Code will prompt users to install these when they open the workspace.
+    // Required extensions are listed first; optional but helpful ones follow.
+    "recommendations": [
+
+        // ── Required ──────────────────────────────────────────────────────────
+        // GitHub Copilot — the AI engine that powers all agents in this repo.
+        "GitHub.copilot",
+        // GitHub Copilot Chat — enables Agent mode (@migrate-arc, @new-plugin).
+        "GitHub.copilot-chat",
+        // Python — syntax highlighting, linting, debugging, virtual-env picker.
+        "ms-python.python",
+        // Pylance — fast Python type-checking and IntelliSense.
+        "ms-python.vscode-pylance",
+
+        // ── Strongly Recommended ───────────────────────────────────────────
+        // YAML — syntax + validation for template-*.yml and copilot config files.
+        "redhat.vscode-yaml",
+        // markdownlint — catches formatting issues in README and .md docs.
+        "DavidAnson.vscode-markdownlint",
+
+        // ── Optional / Nice-to-Have ────────────────────────────────────────
+        // Markdown All in One — table of contents, preview shortcuts, keybindings.
+        "yzhang.markdown-all-in-one",
+        // Mermaid support inside Markdown preview.
+        "bierner.markdown-mermaid"
+    ]
+}

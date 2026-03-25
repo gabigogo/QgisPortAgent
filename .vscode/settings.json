@@ -1,3 +1,32 @@
 {
-    "files.autoSave": "onFocusChange"
+    // ── General editor behaviour ──────────────────────────────────────────
+    "files.autoSave": "onFocusChange",
+    "files.exclude": {
+        "**/__pycache__": true,
+        "**/*.pyc": true
+    },
+
+    // ── Python / Pylance settings ─────────────────────────────────────────
+    // Set this to the Python bundled with your QGIS installation.
+    // Common locations on Windows:
+    //   OSGeo4W (recommended):  C:\OSGeo4W\apps\Python312\python.exe
+    //   Standalone installer:   C:\Program Files\QGIS 3.44\apps\Python312\python.exe
+    //
+    // To find the exact path: open the OSGeo4W Shell and run `where python`.
+    // Or click the Python version in the VS Code status bar (bottom-right)
+    // and choose "Enter interpreter path..." to browse to it manually.
+    //
+    // !! UPDATE THIS PATH to match your machine before using the agents. !!
+    "python.defaultInterpreterPath": "C:\\OSGeo4W\\apps\\Python312\\python.exe",
+    "python.languageServer": "Pylance",
+    "python.analysis.typeCheckingMode": "basic",
+    "[python]": {
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "ms-python.python"
+    },
+
+    // ── GitHub Copilot agent defaults ─────────────────────────────────────
+    // Allow Copilot to read all workspace files for better context.
+    "github.copilot.chat.codeGeneration.useInstructionFiles": true,
+    "chat.agent.maxRequests": 50
 }

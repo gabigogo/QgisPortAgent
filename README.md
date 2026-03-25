@@ -2,6 +2,33 @@
 
 A VS Code GitHub Copilot agent ecosystem for **QGIS 3.44 LTR** development — migrate ArcGIS tools autonomously **or** create new QGIS plugins from concept to production, all without leaving your editor.
 
+## Requirements for Copilot Agent Workflow
+---
+
+
+To use the agents in this repository effectively, users should have the following installed and configured:
+
+- **QGIS 3.44**
+- **VS Code 1.112**
+- **GitHub Copilot extension**
+- **GitHub Copilot account** with active access
+
+### VS Code Recommended Extensions
+
+When you open this workspace in VS Code, you will automatically be prompted to install all recommended extensions.
+They are defined in `.vscode/extensions.json`. The key ones are listed below.
+
+| Extension | Purpose | Required? |
+| --- | --- | --- |
+| GitHub Copilot | AI engine that drives all agents | **Required** |
+| GitHub Copilot Chat | Agent mode (`@migrate-arc`, `@new-plugin`) | **Required** |
+| Python | Syntax, linting, virtual-env picker | **Required** |
+| Pylance | Fast type-checking and IntelliSense | **Required** |
+| YAML | Validates `template-*.yml` config files | Recommended |
+| markdownlint | Catches formatting issues in docs | Recommended |
+| Markdown All in One | TOC, preview shortcuts, keybindings | Optional |
+| Mermaid Markdown support | Renders Mermaid diagrams in preview | Optional |
+
 ---
 
 ## Agents in This Repository
@@ -58,9 +85,9 @@ pip install olefile
 Or use the pre-configured virtual environment:
 
 ```bash
+pip install -r research/requirements.txt
 python -m venv .venv
 .venv\Scripts\activate          # Windows
-pip install -r research/requirements.txt
 ```
 
 ---
@@ -156,9 +183,9 @@ Open Copilot Chat in Agent mode and describe your plugin idea:
 ```
 @qgis-plugin-builder I want to create a plugin that downloads weather data from a public API and displays it as a heatmap layer in QGIS.
 ```
+1. Discovery questions to understand your requirements
 
 The agent will guide you through:
-1. Discovery questions to understand your requirements
 2. Architecture design and archetype selection
 3. Complete code generation for all components
 4. Testing and documentation setup
@@ -173,9 +200,9 @@ Reference the structured prompt:
 ```
 
 Then answer the discovery questions about:
+- UI requirements
 - Plugin purpose and target users
 - Data types and spatial operations
-- UI requirements
 - External integrations
 - Performance needs
 - Deployment strategy
@@ -199,9 +226,9 @@ The agent will:
 
 ---
 
+The agent automatically selects the optimal archetype based on your requirements:
 ### Plugin Archetypes
 
-The agent automatically selects the optimal archetype based on your requirements:
 
 | Archetype | Use When | Key Components | Examples |
 |---|---|---|---|
@@ -217,9 +244,9 @@ The agent automatically selects the optimal archetype based on your requirements
 
 ### The 8-Step Workflow
 
+| **0** | **Concept Discovery** | Agent asks structured questions to understand requirements |
 | Step | Phase | What Happens |
 |---|---|---|
-| **0** | **Concept Discovery** | Agent asks structured questions to understand requirements |
 | **1** | **Architecture Design** | Archetype classification, directory structure, dependency planning |
 | **2** | **Plugin Scaffold** | Complete directory tree, `metadata.txt`, `__init__.py`, resources |
 | **3** | **Core Implementation** | Processing algorithms, UI components, map tools, data connectors |
@@ -291,9 +318,9 @@ Each migration produces a plugin directory in `qgis-tools/`:
 ```
 qgis-tools/<tool_name>_plugin/
 ├── metadata.txt                  # hasProcessingProvider=yes; qgisMinimumVersion=3.44
+├── requirements.txt              # pinned OSS dependencies
 ├── __init__.py                   # classFactory() boilerplate
 ├── main_plugin.py                # self.initProcessing()
-├── requirements.txt              # pinned OSS dependencies
 ├── migration_report.md           # per-block confidence scores + risk summary
 ├── tests/
 │   └── test_<tool_name>.py       # pytest stubs with sample data
@@ -342,9 +369,9 @@ QgisPortAgent/
 │   └── tbx_binary/                         # Binary ArcMap OLE toolboxes
 ├── qgis-tools/                             # Migration output (generated plugins land here)
 ├── research/
+│   ├── requirements.txt                    # Parser dependencies (olefile)
 │   ├── tbx_parser.py                       # Standalone binary .tbx OLE parser
 │   ├── tbx_to_qgis.py                      # Plugin generator
-│   ├── requirements.txt                    # Parser dependencies (olefile)
 │   └── corpus/                             # Binary .tbx test corpus
 ├── test/                                   # Integration test data
 └── README.md
