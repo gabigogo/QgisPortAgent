@@ -73,7 +73,7 @@ constraints: []
 # 6. TESTING & VALIDATION
 # ------------------------------------------------------------
 testing:
-  enabled: true
+  enabled: false
   test_data: null            # path to sample file, or null to use synthetic fixtures
   # Framework: pytest (default)
   

@@ -6,8 +6,8 @@
 # 1. IDENTITY
 # ------------------------------------------------------------
 identity:
-  plugin_name: dem_channel_compare
-  display_name: "DEM Channel Comparison Report"
+  plugin_name: dem_bathy_review
+  display_name: "DEM Bathymetry Comparison Report"
   description: >
     Compares two raster DEMs within buffered zones around channel centreline
     features, computing per-feature difference statistics and exporting a
@@ -22,7 +22,7 @@ identity:
 purpose:
   problem_statement: >
     Hydrologists and geomorphologists need to quantify terrain change between
-    two DEM surveys (e.g. pre/post flood, repeat lidar acquisition) specifically
+    two DEM rasters (e.g. pre/post flood, repeat lidar acquisition) specifically
     within the active channel corridor defined by surveyed centreline vectors.
     Existing workflows require manual buffering, raster clipping, and spreadsheet
     statistics — a multi-step process with no repeatable reporting output.
@@ -149,11 +149,11 @@ geoprocessing_workflow:
       Render the HTML report using Jinja2. Embed all CSS inline within the
       <style> block of the output HTML file. The report contains:
         (a) Run metadata — input file paths, buffer distance, sample spacing,
-            target CRS, run timestamp
-        (b) Per-feature statistics table — feature_id, nodata_count,
-            max_diff, min_diff, median_diff, std_dev, bias, rmse
-        (c) Summary statistics table — overall_min_diff, overall_max_diff,
+            target CRS, run timestamp. LaTex equation showing how diff is computed. 
+        (b) Summary statistics table — overall_min_diff, overall_max_diff,
             rmse (min/max/median), bias (min/max/median), std_dev (min/max/median)
+        (c) Per-feature statistics table — feature_id, nodata_count,
+            max_diff, min_diff, median_diff, std_dev, bias, rmse
       CSS must be minimal, professional, and fully embedded — no external
       stylesheets or CDN links.
     input: "Per-feature records list, summary record, run metadata dict"
@@ -207,10 +207,11 @@ data:
       notes: "Single-band elevation raster. Must overlap spatially with DEM A."
 
     - data_type: "Vector — Channel Centrelines"
-      formats: [GeoPackage, Shapefile, any OGR-supported format]
+      formats: [QGIS Vecor Layer, GeoPackage, Shapefile, any OGR-supported format]
       notes: >
         LineString or MultiLineString features. One statistical record produced
-        per feature.
+        per feature. If a QGIS Vector Layer is provided. Allow the user to only
+        process the selected features. 
 
   outputs:
     - data_type: "HTML Report"
@@ -218,6 +219,7 @@ data:
       notes: >
         Self-contained file with embedded CSS. Contains run metadata,
         per-feature statistics table, and summary statistics table.
+        Do not use Javascript. 
 
     - data_type: "Vector — Sample Points"
       formats: [GeoPackage, Shapefile, any OGR-supported format]
