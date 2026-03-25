@@ -8,8 +8,8 @@ A VS Code GitHub Copilot agent ecosystem for **QGIS 3.44 LTR** development — m
 
 | Agent | Purpose | Use When |
 |---|---|---|
-| **`@arcgis-migration`** | Migrate ArcGIS tools to QGIS Processing algorithms | You have existing ArcGIS toolboxes (`.atbx`, `.tbx`, `.pyt`, `.py`) to port |
-| **`@qgis-plugin-builder`** | Create new QGIS plugins from scratch | You want to build custom QGIS functionality (analysis tools, UI extensions, data connectors) |
+| **`@migrate-arc`** | Migrate ArcGIS tools to QGIS Processing algorithms | You have existing ArcGIS toolboxes (`.atbx`, `.tbx`, `.pyt`, `.py`) to port |
+| **`@new-plugin.md`** | Create new QGIS plugins from scratch | You want to build custom QGIS functionality (analysis tools, UI extensions, data connectors) |
 
 Both agents produce production-ready QGIS plugins with full test suites, documentation, and packaging scripts.
 
@@ -19,7 +19,7 @@ Both agents produce production-ready QGIS plugins with full test suites, documen
 
 ### What it does
 
-Point the `@arcgis-migration` agent at any ArcGIS tool file and it produces a ready-to-install QGIS Processing Plugin with:
+Point the `@migrate-arc` agent at any ArcGIS tool file and it produces a ready-to-install QGIS Processing Plugin with:
 
 - Full `QgsProcessingAlgorithm` scaffold (`initAlgorithm`, `processAlgorithm`, lifecycle hooks)
 - Per-block confidence scores using a 5-component weighted model
@@ -72,7 +72,7 @@ pip install -r research/requirements.txt
 Open Copilot Chat in Agent mode and type:
 
 ```
-@arcgis-migration migrate examples/pyt/field_calculator_example/FieldCalculatorTools.pyt
+@migrate-arc migrate examples/pyt/field_calculator_example/FieldCalculatorTools.pyt
 ```
 
 Or reference the structured prompt template:
@@ -85,7 +85,7 @@ Or reference the structured prompt template:
 
 1. Open the source ArcGIS file in VS Code
 2. Open Copilot Chat (`Ctrl+Alt+I`)
-3. Switch to **Agent mode** and select `arcgis-migration`
+3. Switch to **Agent mode** and select `migrate-arc`
 4. Type: `Migrate the open file`
 
 #### Option 3 — CLI (research scripts)
@@ -135,7 +135,7 @@ The agent runs a 7-step pipeline defined in `.vscode/migrate_tool.prompt.md`:
 
 ### What it does
 
-The `@qgis-plugin-builder` agent guides you from concept to production-ready QGIS 3.44 LTR plugin through an interactive 8-step workflow:
+The `@new-plugin.md` agent guides you from concept to production-ready QGIS 3.44 LTR plugin through an interactive 8-step workflow:
 
 - **Concept elicitation** through structured conversation
 - **Automatic archetype classification** (Processing Provider, Interactive Tool, Data Connector, UI Extension, etc.)
@@ -328,8 +328,8 @@ Each new plugin is created as a standalone directory with archetype-specific com
 QgisPortAgent/
 ├── .github/
 │   └── agents/
-│       ├── arcgis-migration.agent.md       # Migration agent definition
-│       └── qgis-plugin-builder.agent.md    # Plugin builder agent definition
+│       ├── migrate-arc.agent.md       # Migration agent definition
+│       └── new-qgis-plugin.agent.md    # Plugin builder agent definition
 ├── .vscode/
 │   ├── arcgis_migration.instructions.md    # Ambient migration rules (Phases 0–6)
 │   ├── migrate_tool.prompt.md              # /migrate_tool prompt template
@@ -354,7 +354,7 @@ QgisPortAgent/
 
 ## Customising the Agents
 
-### Migration Agent (`@arcgis-migration`)
+### Migration Agent (`@migrate-arc`)
 
 #### Adjusting confidence thresholds
 
@@ -371,11 +371,11 @@ Edit `.vscode/arcgis_migration.instructions.md` → Phase 3 (Licensing & Extensi
 #### Changing the target QGIS version
 
 Search-and-replace `3.44` across `.vscode/arcgis_migration.instructions.md`,
-`.vscode/migrate_tool.prompt.md`, and `.github/agents/arcgis-migration.agent.md`.
+`.vscode/migrate_tool.prompt.md`, and `.github/agents/migrate-arc.agent.md`.
 
 ---
 
-### Plugin Builder Agent (`@qgis-plugin-builder`)
+### Plugin Builder Agent (`@new-plugin.md`)
 
 #### Customizing code generation templates
 
@@ -392,7 +392,7 @@ Edit `.vscode/qgis_plugin_builder.instructions.md` → Phase 5 (Documentation St
 #### Changing the target QGIS version
 
 Search-and-replace `3.44` across `.vscode/qgis_plugin_builder.instructions.md`,
-`.vscode/create_plugin.prompt.md`, and `.github/agents/qgis-plugin-builder.agent.md`.
+`.vscode/create_plugin.prompt.md`, and `.github/agents/new-plugin.agent.md`.
 
 ---
 
