@@ -13,6 +13,7 @@ tools:
   - agent
   - todo
   - web
+  - ms-python.python/getPythonEnvironmentInfo
 ---
 
 # QGIS Plugin Builder Agent

@@ -25,3 +25,4 @@ desktop.ini
 # Editor
 *.swp
 *.swo
+/dem_channel_compare
