@@ -1,36 +1,25 @@
-# qgis-tools/
+# qgis-tools/ (Legacy Compatibility)
 
-This folder is the **migration output destination** for the QgisPortAgent.
+This folder is a legacy compatibility location for generated plugins.
 
-Each successfully migrated ArcGIS tool produces a self-contained QGIS Processing Plugin
-subdirectory here:
+The canonical destination is now:
 
 ```
-qgis-tools/
-└── <tool_name>_plugin/
-    ├── metadata.txt
-    ├── __init__.py
-    ├── main_plugin.py
-    ├── requirements.txt
-    ├── migration_report.md
-    ├── tests/
-    └── processing_provider/
-        ├── __init__.py
-        ├── provider.py
-        └── <tool_name>_algorithm.py
+plugins/generated/
 ```
 
-## Installing a migrated plugin in QGIS
+Current tooling can still read from `qgis-tools/` when explicitly requested
+for backwards compatibility.
 
-See the [root README](../README.md#installing-migrated-plugins-in-qgis) for full instructions
-(symlink, copy, or ZIP install methods).
+## Recommended flow
 
-## Quick install (Windows — symlink method)
+1. Generate plugins into `plugins/generated/`.
+2. Link plugins into your QGIS profile with:
 
-Open a **Command Prompt as Administrator** and run:
-
-```bat
-mklink /J "C:\Users\<YourUsername>\AppData\Roaming\QGIS\QGIS3\profiles\default\python\plugins\<tool_name>_plugin" "<your-workspace>\qgis-tools\<tool_name>_plugin"
+```powershell
+.\scripts\setup_plugins.ps1 -Category generated -IncludeLegacyGenerated
 ```
 
-Then restart QGIS and enable the plugin via **Plugins → Manage and Install Plugins**.
+```bash
+bash scripts/setup_plugins.sh --category generated --include-legacy-generated
+```

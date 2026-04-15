@@ -1,0 +1,4 @@
+<RCC>
+  <qresource prefix="/plugins/qgis_mcp">
+  </qresource>
+</RCC>

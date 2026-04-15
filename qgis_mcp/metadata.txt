@@ -1,0 +1,23 @@
+[general]
+name=QGIS MCP
+qgisMinimumVersion=3.44
+qgisMaximumVersion=3.99
+description=Socket server that exposes QGIS to MCP-compatible AI agents (e.g. GitHub Copilot).
+version=0.1.0
+author=QgisPortAgent contributors
+email=
+category=Plugins
+icon=resources/icon.svg
+experimental=True
+deprecated=False
+supportsQt6=True
+tags=mcp,ai,copilot,remote control,automation,socket
+
+[about]
+about=Starts a TCP socket server inside QGIS so that an external MCP server
+    can send commands to load projects, manage layers, run processing
+    algorithms, apply styles, render maps, and more — all driven by an
+    AI agent in VS Code.
+tracker=https://github.com/atkinsrealis/QgisPortAgent/issues
+repository=https://github.com/atkinsrealis/QgisPortAgent
+homepage=https://github.com/atkinsrealis/QgisPortAgent

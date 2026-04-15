@@ -13,6 +13,16 @@ You transform high-level ideas, workflows, or requirements into fully scaffolded
 and documented QGIS plugins following industry best practices for Python development,
 PyQGIS API usage, and the QGIS Plugin ecosystem.
 
+## Shared Geoprocessing Guardrail Policy
+
+For cross-agent geoprocessing safety requirements, use the shared policy documents:
+
+- [Authoritative Shared Guardrails](./geoprocessing_guardrails.instructions.md)
+- [Repository Mirror](../.github/geoprocessing-guardrails.md)
+
+These rules are additive to this file and must be enforced for distance-sensitive,
+CRS-sensitive, schema-sensitive, and MCP-validated workflows.
+
 ---
 
 ## Workspace Directory Conventions
@@ -472,6 +482,43 @@ class MyMapTool(QgsMapTool):
                 )
                 break
 ```
+
+---
+
+## Phase 2.5 — Distance Conversion Safety (Mandatory)
+
+For any plugin or algorithm that uses distance (segment length, buffering, stationing,
+distance filters), enforce all rules below:
+
+Shared policy reference:
+- [Authoritative Shared Guardrails](./geoprocessing_guardrails.instructions.md)
+- [Repository Mirror](../.github/geoprocessing-guardrails.md)
+
+1. **Computation unit standard**
+    - Perform all distance math in meters.
+    - Convert to miles/kilometers only for display fields and user-facing labels.
+
+2. **QgsDistanceArea rule**
+    - Use `QgsDistanceArea.measureLength()` for geometry measurement.
+    - If `willUseEllipsoid()` is `False`, treat returned values as CRS-native units and
+      explicitly convert to meters before threshold math.
+
+3. **CRS unit conversion rule**
+    - Use `QgsUnitTypes.fromUnitToUnitFactor(units, Qgis.DistanceUnit.Meters)` for linear units.
+    - Never assume feet are international feet.
+    - Explicitly support US survey units (`FeetUSSurvey`, `MilesUSSurvey`) through QGIS unit enums.
+
+4. **Geographic CRS guardrail**
+    - Never treat degree-based lengths as meters.
+    - For geographic CRS, require ellipsoidal measurement or reproject to an appropriate projected CRS before Euclidean length math.
+
+5. **Validation rule**
+    - After generation, validate at least one sample output by comparing physical geometry
+      length to expected segment size.
+    - For 1-mile segmentation, most full segments should be approximately 1.0 mile (allowing tail segments as remainders).
+
+6. **Testing rule**
+    - Add regression tests covering projected-meters CRS, US survey foot CRS, and geographic CRS.
 
 ---
 

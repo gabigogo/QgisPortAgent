@@ -28,6 +28,10 @@ Present these questions conversationally, adapting based on each response:
 3. **Data & Operations**
    - "What types of data will it work with?" (vector, raster, tables, web services)
    - "What spatial operations are needed?" (analysis, visualization, data import/export)
+    - "Will any distance-based outputs be used? If yes, what is the computational base unit (meters) and what display units are required (miles/km/feet)?"
+    - "If yes, apply the shared geoprocessing guardrails from:
+        - .vscode/geoprocessing_guardrails.instructions.md (authoritative)
+        - .github/geoprocessing-guardrails.md (mirror)."
 
 4. **User Interface**
    - "How should users interact with the plugin?" (dialog box, toolbar button, Processing toolbox, map tool)
@@ -189,6 +193,7 @@ For each algorithm:
    - `processAlgorithm()` with core logic
    - Cancellation checks via `feedback.isCanceled()`
    - Progress reporting via `feedback.setProgress()`
+    - Distance safety checks: normalize computational lengths to meters; if `QgsDistanceArea.willUseEllipsoid()` is false, convert CRS-native values to meters before threshold math
 3. **Optimisation** — Vectorized operations where possible; spatial indexing for large datasets
 
 ### 3.2 UI Components (if applicable)
@@ -257,6 +262,7 @@ Create a comprehensive pytest test suite.
 For each function/algorithm, include at minimum:
 - A test with valid input verifying correct output
 - A test with invalid input verifying graceful failure
+- For distance-based algorithms, include CRS/unit conversion regression tests (projected meters, US survey feet, geographic CRS)
 
 ```python
 def test_algorithm_with_valid_input(sample_layer):

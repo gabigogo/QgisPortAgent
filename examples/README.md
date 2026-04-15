@@ -6,6 +6,17 @@ a short README explaining what migration scenario it exercises.
 
 ---
 
+## Brief-First Onboarding
+
+Before creating or migrating plugins, start with the brief templates:
+
+- Briefs hub: [briefs/README.md](briefs/README.md)
+- New plugin template: [briefs/templates/template-new-plugin.yml](briefs/templates/template-new-plugin.yml)
+- ArcGIS migration template: [briefs/templates/template-migrate-arc.yml](briefs/templates/template-migrate-arc.yml)
+- Worked examples: [briefs/worked-examples/stream_segmenter_brief.yaml](briefs/worked-examples/stream_segmenter_brief.yaml), [briefs/worked-examples/dem_comparison_brief.yaml](briefs/worked-examples/dem_comparison_brief.yaml)
+
+---
+
 ## Example Inventory
 
 | Path | Format | Source | License Tier | Key Scenarios |
@@ -36,7 +47,7 @@ Open any example file, then type in the chat:
 The agent automatically:
 1. Detects the source format
 2. Parses parameters and execute logic
-3. Generates a QGIS Processing Plugin into `qgis-tools/<tool_name>_plugin/`
+3. Generates a QGIS Processing Plugin into `plugins/generated/<tool_name>_plugin/`
 4. Produces a `migration_report.md` with per-block confidence scores
 
 ---

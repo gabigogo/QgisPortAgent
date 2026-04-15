@@ -1,0 +1,11 @@
+[project]
+name = "qgis-mcp-server"
+version = "0.1.0"
+description = "MCP server that bridges VS Code Copilot to a QGIS MCP plugin via TCP socket."
+requires-python = ">=3.10"
+dependencies = [
+    "mcp",
+]
+
+[project.scripts]
+qgis-mcp-server = "qgis_mcp_server:main"

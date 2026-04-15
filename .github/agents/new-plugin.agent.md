@@ -30,6 +30,14 @@ Your full methodology, architecture patterns, code templates, and best practices
   Phases 0–8: concept elicitation, architecture design, implementation, testing, and distribution.
 - **[Plugin Creation Prompt Template](../../.vscode/create_plugin.prompt.md)**
   8-step execution pipeline from discovery to handoff.
+- **[New Plugin Brief Template](../../examples/briefs/templates/template-new-plugin.yml)**
+  Fill-in-the-blanks brief for first-time users before discovery and architecture design.
+- **[Worked Brief Examples](../../examples/briefs/worked-examples/stream_segmenter_brief.yaml)**
+  Real examples showing expected depth and structure of a completed plugin brief.
+- **[Shared Geoprocessing Guardrails](../../.vscode/geoprocessing_guardrails.instructions.md)**
+  Cross-agent guardrails for distance normalization, CRS handling, schema safety, and QA.
+- **[Shared Geoprocessing Guardrails Mirror](../geoprocessing-guardrails.md)**
+  Repository mirror for review and collaboration.
 
 Load and follow these files for every plugin creation task.
 
@@ -39,10 +47,11 @@ Load and follow these files for every plugin creation task.
 
 | Convention | Rule |
 |---|---|
-| **Plugin root** | Each plugin lives in its own directory: `<plugin_name>/` |
+| **Plugin root** | Each generated plugin lives in `plugins/generated/<plugin_name>/` |
 | **Output location** | All generated source code, tests, docs, and resources go inside the plugin root |
 | **Isolation** | Never mix multiple plugins in a single directory |
 | **No pollution** | Never write temporary files to the workspace root |
+| **Brief intake** | Prefer a completed brief in `examples/briefs/worked-examples/` when the user does not provide a full specification |
 
 ---
 
@@ -93,6 +102,15 @@ Classify every plugin into one archetype before designing its architecture:
 - Validate all inputs before processing begins
 - Prefer `processing.run()` for standard spatial operations over custom re-implementations
 
+### Distance Conversion Safety (Mandatory)
+- Perform all distance threshold math in meters, then convert only for display labels.
+- When using `QgsDistanceArea.measureLength()`, branch on `willUseEllipsoid()`:
+  if `False`, convert CRS-native lengths to meters explicitly.
+- Use `QgsUnitTypes.fromUnitToUnitFactor(units, Qgis.DistanceUnit.Meters)` for linear CRS units.
+- Never hardcode feet assumptions. Support US survey units (for example `FeetUSSurvey`, `MilesUSSurvey`) via QGIS unit conversion APIs.
+- Do not treat degree-based lengths as meters. For geographic CRS, require ellipsoidal measurement or transform to a projected CRS before length math.
+- Require a post-run validation spot-check comparing geometry lengths to expected segment size (for example `~1.0 mi` for 1-mile segmentation).
+
 ### Performance
 - **Prefer vectorized operations** (geopandas + pyogrio) over row-by-row QGIS API iteration for datasets > ~10 k features
 - Use `QgsSpatialIndex` for spatial lookups on large datasets
@@ -121,6 +139,10 @@ Classify every plugin into one archetype before designing its architecture:
 - Include unit tests for all core functions
 - Include integration tests covering plugin load and Processing provider registration
 - Target ≥ 80% code coverage
+- Include CRS/unit regression tests for at least:
+  - projected meter CRS,
+  - projected US survey foot CRS,
+  - geographic CRS.
 
 ### Distribution
 - Validate `metadata.txt` completeness before packaging
@@ -149,12 +171,13 @@ Classify every plugin into one archetype before designing its architecture:
 For every plugin creation request:
 
 1. Start with **Step 0** (Concept Discovery) unless the user provides a complete spec
-2. Wait for confirmation at archetype selection and architecture review
-3. Generate all files for one phase before moving to the next
-4. Present code in clearly labelled blocks showing the full file path
-5. Explain key patterns used in each generated file
-6. Provide testing instructions after implementation is complete
-7. Deliver a full handoff summary with deliverables list and next steps
+2. If the user does not have a complete spec, direct them to fill `examples/briefs/templates/template-new-plugin.yml` and continue from that brief
+3. Wait for confirmation at archetype selection and architecture review
+4. Generate all files for one phase before moving to the next
+5. Present code in clearly labelled blocks showing the full file path
+6. Explain key patterns used in each generated file
+7. Provide testing instructions after implementation is complete
+8. Deliver a full handoff summary with deliverables list and next steps
 
 ---
 

@@ -11,16 +11,27 @@ env/
 
 # QGIS plugin build artifacts
 qgis-tools/*.zip
+plugins/generated/*.zip
 
 # Generated plugin output (user-created migrations land here; keep local only)
 # The qgis-tools/ folder itself is committed (contains README.md)
 qgis-tools/*/
 !qgis-tools/README.md
 
+# Canonical generated output path
+plugins/generated/*/
+!plugins/generated/README.md
+
 # OS artefacts
 .DS_Store
 Thumbs.db
 desktop.ini
+
+# MCP server binaries (downloaded by setup.ps1, not committed)
+.mcp/
+
+# Environment variables (may contain secrets)
+.env
 
 # Editor
 *.swp
@@ -28,3 +39,5 @@ desktop.ini
 /dem_channel_compare
 /test/dem_channel_comparison
 /dem_bathy_review
+/stream_segmenter
+/DEM Bathymetry Comparison Report.pdf

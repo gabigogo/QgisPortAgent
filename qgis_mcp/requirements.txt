@@ -1,0 +1,1 @@
+# No pip dependencies — the plugin runs inside QGIS's bundled Python.

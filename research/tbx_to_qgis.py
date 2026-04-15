@@ -2,7 +2,7 @@
 tbx_to_qgis.py — Generate a QGIS 3.44 Processing Plugin scaffold from a parsed TbxToolbox.
 
 Usage:
-    python research/tbx_to_qgis.py arcgis-tools/MyToolbox.tbx [--out qgis-tools] [--scope full]
+    python research/tbx_to_qgis.py arcgis-tools/MyToolbox.tbx [--out plugins/generated] [--scope full]
 
 Scopes:
     full          Plugin scaffold + algorithm + tests + migration_report + requirements.txt (default)
@@ -609,14 +609,14 @@ def _generate_migration_report(tbx: TbxToolbox, out_dir: pathlib.Path) -> str:
 
 def generate_plugin(
     tbx_path: str | pathlib.Path,
-    out_root: str | pathlib.Path = "qgis-tools",
+    out_root: str | pathlib.Path = "plugins/generated",
     scope: str = "full",
 ) -> pathlib.Path:
     """Parse a binary .tbx and generate a QGIS Processing Plugin scaffold.
 
     Args:
         tbx_path:  Path to the binary .tbx file.
-        out_root:  Root output directory (default: qgis-tools/).
+        out_root:  Root output directory (default: plugins/generated/).
         scope:     One of 'full', 'scaffold-only', 'report-only'.
 
     Returns:
@@ -678,7 +678,11 @@ def _cli():
         description="Generate a QGIS 3.44 Processing Plugin scaffold from a binary ArcGIS .tbx file."
     )
     parser.add_argument("tbx", help="Path to the binary .tbx file")
-    parser.add_argument("--out", default="qgis-tools", help="Output root directory (default: qgis-tools)")
+    parser.add_argument(
+        "--out",
+        default="plugins/generated",
+        help="Output root directory (default: plugins/generated)",
+    )
     parser.add_argument(
         "--scope",
         choices=["full", "scaffold-only", "report-only"],

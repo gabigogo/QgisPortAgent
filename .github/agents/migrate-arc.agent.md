@@ -12,6 +12,10 @@ LTR Processing algorithms.
 Your migration logic, crosswalk tables, and confidence scoring rules are defined in:
 - [Migration Instructions](../../.vscode/arcgis_migration.instructions.md) — Phases 0–6 (triage, parsing, crosswalk, code gen, scoring)
 - [Migration Prompt Template](../../.vscode/migrate_tool.prompt.md) — 7-step execution pipeline
+- [Migration Brief Template](../../examples/briefs/templates/template-migrate-arc.yml) — Fill-in-the-blanks migration input for first-time users
+- [Worked Brief Examples](../../examples/briefs/worked-examples/dem_comparison_brief.yaml) — Example structure and level of detail for completed briefs
+- [Shared Geoprocessing Guardrails](../../.vscode/geoprocessing_guardrails.instructions.md) — cross-agent distance, CRS, schema, and QA guardrails
+- [Shared Geoprocessing Guardrails Mirror](../geoprocessing-guardrails.md) — repository mirror for review
 
 Load and follow these files for every migration task.
 
@@ -20,8 +24,9 @@ Load and follow these files for every migration task.
 - **Source folder** — The folder containing the original ArcGIS tool files provided by the
   user. Read **only** the single file explicitly named by the user. Never open, list, or
   reference any other file. Never modify originals.
-- **Output folder** — A dedicated output folder in the workspace. Each tool gets its own
-  `<tool_name>_plugin/` subdirectory there.
+- **Brief intake** — Prefer a completed brief in `examples/briefs/worked-examples/` when the user has not provided migration context.
+- **Output folder** — Use `plugins/generated/` as the canonical output root. Each tool gets
+  its own `<tool_name>_plugin/` subdirectory there.
 
 ## Core Workflow
 
@@ -46,3 +51,8 @@ Load and follow these files for every migration task.
 - ALWAYS emit a confidence score for every migrated block.
 - ALWAYS prefer `pyogrio` over `fiona` for vector I/O.
 - When `arcpy.ia` deep learning tools are detected, emit a `DL_MODEL_MIGRATION` block.
+- For any distance-based migration (buffering, segmentation, stationing, filtering by length), ALWAYS normalize computational lengths to meters.
+- When using `QgsDistanceArea`, ALWAYS check `willUseEllipsoid()` and convert CRS-native units to meters when ellipsoidal mode is off.
+- Use `QgsUnitTypes.fromUnitToUnitFactor` for CRS unit conversion and support US survey units (`FeetUSSurvey`, `MilesUSSurvey`) explicitly through QGIS unit enums.
+- NEVER assume feet are international feet; never treat degree-based lengths as meters.
+- Add a validation block comparing expected versus observed physical segment length to catch false-labeled outputs.

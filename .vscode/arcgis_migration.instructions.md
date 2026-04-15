@@ -49,6 +49,27 @@ This workspace uses two dedicated folders to separate source and output:
 
 ---
 
+## Distance Conversion Guardrails (Mandatory)
+
+Shared policy reference:
+- [Authoritative Shared Guardrails](./geoprocessing_guardrails.instructions.md)
+- [Repository Mirror](../.github/geoprocessing-guardrails.md)
+
+For migrated tools that use distance thresholds or labels (for example segmentation,
+buffering, stationing, length-based filtering), enforce the following:
+
+1. Normalize computational lengths to meters before any threshold or segment-count math.
+2. When using `QgsDistanceArea.measureLength()`, check `willUseEllipsoid()`:
+   - `True`: values are in meters.
+   - `False`: values are CRS-native units and must be converted to meters.
+3. Use QGIS conversion APIs (`QgsUnitTypes.fromUnitToUnitFactor`) for linear unit conversion.
+4. Never assume `feet == international feet`; support US survey units (`FeetUSSurvey`, `MilesUSSurvey`) through QGIS unit enums.
+5. Never treat degree-based lengths as meters.
+6. Add migration validation checks comparing expected versus observed physical lengths on sample outputs.
+7. Include at least one regression test using a US survey foot CRS dataset.
+
+---
+
 ## Pre-Flight Check — Binary `.tbx` Detection
 
 Before any parsing, verify a `.tbx` file is XML-based, not the binary OLE format:

@@ -1,6 +1,7 @@
 {
     // VS Code will prompt users to install these when they open the workspace.
     // Required extensions are listed first; optional but helpful ones follow.
+    // NOTE: MCP support is built into VS Code 1.101+ — no extra extension needed.
     "recommendations": [
 
         // ── Required ──────────────────────────────────────────────────────────

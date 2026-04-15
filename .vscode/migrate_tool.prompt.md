@@ -1,6 +1,6 @@
 ---
 description: "Migrate an ArcGIS tool to a QGIS 3.44 Processing Plugin"
-mode: agent
+agent: migrate-arc
 ---
 
 # Migrate ArcGIS Tool → QGIS 3.44 Processing Algorithm
@@ -96,6 +96,14 @@ Save the `.py` to the workspace → re-run with that file → Step 1 (Phase 1.5 
   open, or list any other file. Never modify originals.
 - **All generated output** goes into a `<tool_name>_plugin/` directory. Never write into the
   source file's folder or the workspace root.
+
+## Shared Geoprocessing Guardrails
+
+For migration decisions that involve distance units, CRS handling, schema safety, or
+post-run QA, apply the shared policy documents:
+
+- [Authoritative Shared Guardrails](./geoprocessing_guardrails.instructions.md)
+- [Repository Mirror](../.github/geoprocessing-guardrails.md)
 
 ---
 
@@ -225,6 +233,8 @@ State the migration approach explicitly before generating code:
 2. Choose between `native:` C++ algorithms and vectorized Python libraries.
 3. Flag any row-wise cursor loops for vectorization with geopandas + pyogrio.
 4. Identify any calls with no direct equivalent (confidence < 0.70).
+5. For any distance-based operation, explicitly define meter-normalized computational flow,
+   CRS-unit conversion path, and display-unit formatting path.
 
 **Output format:**
 > "The source uses [License Tier] tools: [list]. I will implement using:
@@ -272,6 +282,13 @@ Create the full QGIS Processing Plugin directory:
   - **ZERO** hardcoded paths — every path elevated to a Processing parameter.
   - **NO** Python 2 syntax — pure Python 3.12.
   - **NO** row-wise loop transliterations — vectorize with geopandas + pyogrio.
+  - **Distance safety is mandatory**:
+    - Apply shared guardrail policy from `.vscode/geoprocessing_guardrails.instructions.md`.
+    - Normalize computational lengths to meters.
+    - When using `QgsDistanceArea.measureLength()`, if `willUseEllipsoid()` is false,
+      convert CRS-native units to meters before any threshold/segment math.
+    - Use `QgsUnitTypes.fromUnitToUnitFactor` and support US survey units (`FeetUSSurvey`, `MilesUSSurvey`).
+    - Never treat degree-based lengths as meters.
 
 ---
 

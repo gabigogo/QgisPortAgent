@@ -1,0 +1,28 @@
+{
+    "inputs": [
+        {
+            "type": "promptString",
+            "id": "github_token",
+            "description": "GitHub Personal Access Token (create at https://github.com/settings/personal-access-tokens/new)",
+            "password": true
+        }
+    ],
+    "servers": {
+        "qgis": {
+            "command": "uv",
+            "args": [
+                "--directory",
+                "${workspaceFolder}/qgis_mcp/src",
+                "run",
+                "qgis_mcp_server.py"
+            ]
+        },
+        "github": {
+            "command": "${workspaceFolder}/.mcp/github-mcp-server.exe",
+            "args": ["stdio"],
+            "env": {
+                "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
+            }
+        }
+    }
+}
