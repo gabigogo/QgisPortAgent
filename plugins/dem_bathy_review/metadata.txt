@@ -1,0 +1,19 @@
+[general]
+name=dem_bathy_review
+qgisMinimumVersion=3.44
+qgisMaximumVersion=3.99
+description=Compares two DEMs within buffered channel corridors and generates detailed standard or grouped HTML reports.
+version=0.2.0
+author=gabriela govea
+email=gabriela.govea@atkinsrealis.com
+about=Automates DEM bathymetry change review by buffering channel centrelines, sampling paired rasters, computing per-feature statistics, and exporting either a standard report or a grouped report with per-group summaries and absolute-bias significance flags.
+tracker=https://github.com/atkinsrealis/dem_bathy_review/issues
+repository=https://github.com/atkinsrealis/dem_bathy_review
+homepage=https://github.com/atkinsrealis/dem_bathy_review
+category=Analysis
+icon=resources/icon.svg
+experimental=False
+deprecated=False
+hasProcessingProvider=True
+supportsQt6=True
+tags=dem,bathymetry,terrain,hydrology,geomorphology,comparison,reporting

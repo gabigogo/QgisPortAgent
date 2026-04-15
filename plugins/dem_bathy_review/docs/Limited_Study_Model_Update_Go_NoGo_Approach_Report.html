@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DEM Comparison Methodology - Channel Topography Update Decision Framework</title>
+  <style>
+    :root {
+      --primary: #2c5f4d;
+      --secondary: #4a7c6a;
+      --accent: #7ab894;
+      --ink: #1f2d2d;
+      --muted: #5f6d6d;
+      --line: #d8dfdf;
+      --bg: #f8fbfb;
+      --head: #e6f0ed;
+      --paper: #ffffff;
+      --warn-bg: #fff4e6;
+      --warn-line: #ffcf99;
+      --ok-bg: #e9f7ef;
+      --ok-line: #b7e1c5;
+      --info-bg: #e6f2ff;
+      --info-line: #99ccff;
+    }
+    
+    body {
+      margin: 0;
+      padding: 24px;
+      font-family: "Calibri", "Segoe UI", "Helvetica Neue", sans-serif;
+      color: var(--ink);
+      background: linear-gradient(180deg, #f7fbfa 0%, #f0f7f4 100%);
+      line-height: 1.6;
+    }
+    
+    .document {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      box-shadow: 0 10px 28px rgba(20, 48, 39, 0.08);
+      overflow: hidden;
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+      color: white;
+      padding: 32px 36px;
+      border-bottom: 3px solid var(--accent);
+    }
+    
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 28px;
+      font-weight: 600;
+    }
+    
+    .header .subtitle {
+      font-size: 16px;
+      opacity: 0.95;
+      font-weight: 300;
+    }
+    
+    .content {
+      padding: 36px;
+    }
+    
+    h2 {
+      color: var(--primary);
+      font-size: 22px;
+      margin: 32px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid var(--accent);
+    }
+    
+    h3 {
+      color: var(--secondary);
+      font-size: 18px;
+      margin: 24px 0 12px 0;
+    }
+    
+    h4 {
+      color: var(--muted);
+      font-size: 15px;
+      margin: 16px 0 8px 0;
+      font-weight: 600;
+    }
+    
+    p {
+      margin: 12px 0;
+      text-align: justify;
+    }
+    
+    .callout {
+      border-left: 4px solid var(--accent);
+      background: var(--bg);
+      padding: 16px 20px;
+      margin: 20px 0;
+      border-radius: 0 8px 8px 0;
+    }
+    
+    .callout.info {
+      border-left-color: #3498db;
+      background: var(--info-bg);
+    }
+    
+    .callout.warning {
+      border-left-color: #f39c12;
+      background: var(--warn-bg);
+    }
+    
+    .callout.success {
+      border-left-color: #27ae60;
+      background: var(--ok-bg);
+    }
+    
+    .callout strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--primary);
+    }
+    
+    .parameter-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 16px;
+      margin: 20px 0;
+    }
+    
+    .parameter-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+      background: #fafdfc;
+    }
+    
+    .parameter-card .label {
+      font-weight: 600;
+      color: var(--secondary);
+      font-size: 14px;
+      margin-bottom: 4px;
+    }
+    
+    .parameter-card .value {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .parameter-card .description {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+    
+    .process-flow {
+      background: white;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 20px;
+      margin: 24px 0;
+    }
+    
+    .step {
+      display: flex;
+      margin: 16px 0;
+      align-items: flex-start;
+    }
+    
+    .step-number {
+      min-width: 36px;
+      height: 36px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      margin-right: 16px;
+      flex-shrink: 0;
+    }
+    
+    .step-content {
+      flex: 1;
+    }
+    
+    .step-content h4 {
+      margin: 0 0 6px 0;
+      color: var(--primary);
+    }
+    
+    .step-content p {
+      margin: 4px 0;
+      text-align: left;
+    }
+    
+    .equation {
+      background: #f9f9f9;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      padding: 16px;
+      margin: 16px 0;
+      text-align: center;
+      font-size: 16px;
+      font-family: "Cambria Math", "Times New Roman", serif;
+    }
+    
+    .decision-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 20px 0;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .decision-matrix th {
+      background: var(--primary);
+      color: white;
+      padding: 14px;
+      text-align: left;
+      font-weight: 600;
+    }
+    
+    .decision-matrix td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+    }
+    
+    .decision-matrix tr:nth-child(even) {
+      background: #fbfdfd;
+    }
+    
+    .badge {
+      display: inline-block;
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+    
+    .badge.go {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+    
+    .badge.no-go {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+    
+    ul, ol {
+      margin: 12px 0;
+      padding-left: 28px;
+    }
+    
+    li {
+      margin: 6px 0;
+    }
+    
+    code {
+      background: #f4f4f4;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-family: "Consolas", "Monaco", monospace;
+      font-size: 13px;
+      color: #c7254e;
+    }
+    
+    .footer {
+      background: var(--bg);
+      border-top: 1px solid var(--line);
+      padding: 20px 36px;
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+    }
+    
+    .diagram {
+      background: white;
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      padding: 24px;
+      margin: 24px 0;
+      text-align: center;
+    }
+    
+    .diagram img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+      }
+      .document {
+        box-shadow: none;
+        border: none;
+      }
+    }
+  </style>
+  <script>
+    window.MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+  <article class="document">
+    <header class="header">
+      <h1>DEM Comparison Methodology Report</h1>
+      <div class="subtitle">WPT 2.0 - Limited Study Channel Topography Update Decision Framework for Hydraulic Model Refinement</div>
+    </header>
+
+    <div class="content">
+      <!-- EXECUTIVE SUMMARY -->
+      <section>
+        <h2>1. Executive Summary</h2>
+        <p>
+          This methodology describes the systematic approach used to compare two Digital Elevation Models (DEMs) 
+          to determine whether updated topographic data should be incorporated into existing hydraulic models. 
+          The process uses a <strong>go/no-go decision framework</strong> applied to individual drainage channels, 
+          evaluating the statistical significance of elevation differences between the 2022 Level of Service (LOS) 
+          Limited Study Topography (<em>LOS DEM</em>) and the updated MAAPNext Topography (<em>MAAPNext DEM</em>).
+        </p>
+        
+        <div class="callout info">
+          <strong>Primary Objective</strong>
+          Identify channels where topographic changes are statistically significant enough to warrant updating 
+          the hydraulic model geometry, ensuring efficient resource allocation and model accuracy improvements.
+        </div>
+      </section>
+
+      <!-- INPUT DATA -->
+      <section>
+        <h2>2. Input Data Sources</h2>
+        
+        <h3>2.1 Topographic Datasets</h3>
+        <p>
+          The comparison utilizes two distinct topographic datasets representing the same geographic area 
+          at different points in time or derived from different data collection methodologies:
+        </p>
+        
+        <ul>
+          <li>
+            <strong>DEM A – LOS DEM (2022 Level of Service Limited Study Topography):</strong> 
+            Represents the baseline topographic surface currently used in the existing hydraulic models. 
+            This dataset reflects channel conditions from the 2022 County-wide Level of Service study.
+          </li>
+          <li>
+            <strong>DEM B – MAAPNext DEM (MAAPNext Topography):</strong> 
+            Represents updated topographic data developed as part of the MAAPNext program, incorporating 
+            Atlas 14 rainfall data and potentially newer survey information. This dataset may reflect 
+            recent channel modifications, erosion, sedimentation, or improved data collection techniques.
+          </li>
+        </ul>
+        
+        <h3>2.2 Channel Centerline Layer</h3>
+        <p>
+          A vector GIS layer containing polyline features representing the centerlines of drainage channels 
+          within the study area. Each channel feature includes a unique identifier and optional grouping 
+          attributes (e.g., watershed designation, unit number, or jurisdictional area). The centerlines 
+          define the spatial extent and organization of the comparison analysis.
+        </p>
+      </section>
+
+      <!-- ANALYSIS PARAMETERS -->
+      <section>
+        <h2>3. Analysis Parameters</h2>
+        
+        <p>
+          The methodology employs standardized parameters to ensure consistency and reproducibility across 
+          all channel comparisons. These parameters control the spatial sampling strategy and statistical 
+          thresholds for decision-making.
+        </p>
+        
+        <div class="parameter-grid">
+          <div class="parameter-card">
+            <div class="label">Buffer Distance</div>
+            <div class="value">30 feet</div>
+            <div class="description">
+              Lateral corridor width around each channel centerline defining the sampling zone
+            </div>
+          </div>
+          
+          <div class="parameter-card">
+            <div class="label">Sample Spacing</div>
+            <div class="value">5 feet</div>
+            <div class="description">
+              Uniform grid spacing for generating sample points within buffered corridors
+            </div>
+          </div>
+          
+          <div class="parameter-card">
+            <div class="label">Bias Threshold</div>
+            <div class="value">0.5 feet</div>
+            <div class="description">
+              Statistical significance criterion for mean elevation difference (bias)
+            </div>
+          </div>
+          
+          <div class="parameter-card">
+            <div class="label">Outlier Tolerance</div>
+            <div class="value">12 feet</div>
+            <div class="description">
+              Maximum acceptable absolute difference; values exceeding this are excluded from statistics
+            </div>
+          </div>
+        </div>
+        
+        <div class="callout">
+          <strong>Parameter Rationale</strong>
+          The 30-foot buffer ensures adequate spatial coverage of the channel corridor while minimizing 
+          influence from adjacent terrain. The 5-foot sample spacing provides high-resolution statistical 
+          characterization without excessive computational burden. The 0.5-foot bias threshold represents 
+          a practical minimum difference that would meaningfully impact hydraulic model results, while the 
+          12-foot outlier tolerance filters data quality issues without removing legitimate topographic variations.
+        </div>
+      </section>
+
+      <!-- METHODOLOGY -->
+      <section>
+        <h2>4. Detailed Methodology</h2>
+        
+        <h3>4.1 Spatial Sampling Strategy</h3>
+        <p>
+          For each channel in the centerline layer, the analysis follows a systematic spatial sampling approach 
+          to characterize elevation differences across the channel corridor:
+        </p>
+        
+        <div class="process-flow">
+          <div class="step">
+            <div class="step-number">1</div>
+            <div class="step-content">
+              <h4>Corridor Delineation</h4>
+              <p>
+                The channel centerline is buffered by 30 feet on both sides (60-foot total corridor width) 
+                using a <em>flat cap</em> and <em>round join</em> style. This creates a uniform analysis zone 
+                that follows the channel alignment while maintaining consistent lateral extent.
+              </p>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-number">2</div>
+            <div class="step-content">
+              <h4>Sample Point Generation</h4>
+              <p>
+                A regular grid of sample points is generated at 5-foot spacing within the buffered corridor 
+                polygon. The grid alignment is optimized to maximize point coverage while maintaining spatial 
+                regularity. Typical channels generate hundreds to thousands of sample points depending on length.
+              </p>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-number">3</div>
+            <div class="step-content">
+              <h4>Elevation Extraction</h4>
+              <p>
+                At each sample point location, elevation values are extracted from both the LOS DEM ($z_A$) 
+                and the MAAPNext DEM ($z_B$) using bilinear interpolation. Points falling in NoData regions 
+                of either DEM are flagged and tracked separately but excluded from statistical calculations.
+              </p>
+            </div>
+          </div>
+          
+          <div class="step">
+            <div class="step-number">4</div>
+            <div class="step-content">
+              <h4>Difference Calculation</h4>
+              <p>
+                For each valid sample point, the elevation difference is computed using the convention:
+              </p>
+              <div class="equation">
+                $$\Delta z = z_A - z_B = z_{\text{LOS}} - z_{\text{MAAPNext}}$$
+              </div>
+              <p>
+                Positive values indicate the LOS DEM is higher than MAAPNext DEM (potential channel incision 
+                or MAAPNext showing deeper channel). Negative values indicate the opposite (potential aggradation 
+                or MAAPNext showing shallower channel).
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <h3>4.2 Outlier Exclusion Process</h3>
+        <p>
+          To ensure robust statistical characterization unaffected by data quality issues or localized anomalies, 
+          an outlier exclusion protocol is applied:
+        </p>
+        
+        <ol>
+          <li>
+            <strong>Absolute Difference Test:</strong> Each sample point difference is evaluated against the 
+            12-foot outlier tolerance threshold using the criterion: $|\Delta z| \leq 12.0$ feet
+          </li>
+          <li>
+            <strong>Exclusion Flagging:</strong> Points exceeding the threshold are flagged as 
+            <code>is_excluded = 1</code> in the output dataset and counted separately from valid samples
+          </li>
+          <li>
+            <strong>Statistical Impact:</strong> Excluded points are <strong>not</strong> used in computing:
+            <ul>
+              <li>Mean bias (average difference)</li>
+              <li>Root Mean Square Error (RMSE)</li>
+              <li>Standard deviation</li>
+              <li>Median difference</li>
+            </ul>
+          </li>
+          <li>
+            <strong>Minimum Sample Requirement:</strong> After outlier exclusion, a minimum of 3 valid sample 
+            points must remain for the channel to be included in the analysis. Channels failing this criterion 
+            are flagged with a warning and excluded from decision-making.
+          </li>
+        </ol>
+        
+        <div class="callout warning">
+          <strong>Important Note on Min/Max Values</strong>
+          Minimum and maximum difference values are computed from <em>all valid points</em> (including outliers) 
+          to preserve visibility of the full observed range. This distinction ensures extreme values are 
+          documented even when excluded from central tendency metrics.
+        </div>
+        
+        <h3>4.3 Statistical Metrics Computation</h3>
+        <p>
+          Following outlier exclusion, the remaining "clean" dataset of elevation differences is used to 
+          compute descriptive statistics for each channel:
+        </p>
+        
+        <h4>4.3.1 Bias (Mean Difference)</h4>
+        <div class="equation">
+          $$\text{Bias} = \frac{1}{n}\sum_{i=1}^{n}\Delta z_i$$
+        </div>
+        <p>
+          Represents the systematic average offset between the two DEMs. Positive bias indicates LOS DEM 
+          consistently higher; negative bias indicates MAAPNext DEM consistently higher.
+        </p>
+        
+        <h4>4.3.2 Root Mean Square Error (RMSE)</h4>
+        <div class="equation">
+          $$\text{RMSE} = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(\Delta z_i)^2}$$
+        </div>
+        <p>
+          Quantifies the overall magnitude of differences, incorporating both systematic bias and random variability. 
+          RMSE is always non-negative and sensitive to large deviations.
+        </p>
+        
+        <h4>4.3.3 Standard Deviation</h4>
+        <div class="equation">
+          $$\sigma = \sqrt{\frac{1}{n}\sum_{i=1}^{n}(\Delta z_i - \text{Bias})^2}$$
+        </div>
+        <p>
+          Measures the variability of differences around the mean bias, indicating consistency of the offset 
+          across the channel corridor.
+        </p>
+        
+        <h4>4.3.4 Median Difference</h4>
+        <p>
+          The 50th percentile value of the difference distribution, providing a robust central tendency measure 
+          less sensitive to remaining extreme values than the mean.
+        </p>
+        
+        <h3>4.4 Grouped Summary Analysis</h3>
+        <p>
+          When channels are organized into groups (e.g., by watershed, unit number, or jurisdictional area), 
+          the methodology computes group-level summary statistics by aggregating all valid sample points 
+          across all channels within each group. This provides higher-level decision support for watershed-scale 
+          planning and prioritization.
+        </p>
+        
+        <p>
+          Group summaries include all the same statistical metrics as channel-level results, plus:
+        </p>
+        <ul>
+          <li>Total number of channels in the group</li>
+          <li>Total number of valid sample points across all channels</li>
+          <li>Total number of excluded outlier points</li>
+          <li>Count and proportion of channels flagged as "significant"</li>
+        </ul>
+      </section>
+
+      <!-- DECISION FRAMEWORK -->
+      <section>
+        <h2>5. Go/No-Go Decision Framework</h2>
+        
+        <p>
+          The primary output of this methodology is a <strong>binary recommendation</strong> for each channel 
+          regarding whether the hydraulic model topography should be updated using the MAAPNext DEM. The 
+          decision is based on statistical significance of the observed bias.
+        </p>
+        
+        <h3>5.1 Decision Criterion</h3>
+        <div class="equation">
+          $$\text{GO} \iff |\text{Bias}| > 0.5 \text{ feet}$$
+        </div>
+        <div class="equation">
+          $$\text{NO-GO} \iff |\text{Bias}| \leq 0.5 \text{ feet}$$
+        </div>
+        
+        <h3>5.2 Decision Matrix</h3>
+        <table class="decision-matrix">
+          <thead>
+            <tr>
+              <th>Condition</th>
+              <th>Mathematical Test</th>
+              <th>Recommendation</th>
+              <th>Interpretation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Significant Deviation Detected</td>
+              <td>$|\text{Bias}| > 0.5$ ft</td>
+              <td><span class="badge go">GO</span></td>
+              <td>
+                Strong evidence for topographic change. Update hydraulic model geometry with MAAPNext DEM 
+                to improve model accuracy and representativeness.
+              </td>
+            </tr>
+            <tr>
+              <td>No Significant Deviation</td>
+              <td>$|\text{Bias}| \leq 0.5$ ft</td>
+              <td><span class="badge no-go">NO-GO</span></td>
+              <td>
+                Lack of evidence for meaningful topographic change. Existing LOS DEM adequately represents 
+                current conditions; model update not warranted at this time.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        
+        <h3>5.3 Decision Rationale</h3>
+        <p>
+          The 0.5-foot bias threshold represents a practical engineering judgment balancing several considerations:
+        </p>
+        <ul>
+          <li>
+            <strong>Hydraulic Sensitivity:</strong> Elevation changes of 0.5 feet or greater typically produce 
+            measurable impacts on water surface elevations, flow velocities, and flood extent delineation in 
+            1D steady-state hydraulic models
+          </li>
+          <li>
+            <strong>Data Accuracy:</strong> The threshold exceeds typical DEM vertical accuracy specifications 
+            (commonly ±0.3 to ±0.5 feet for LiDAR-derived products), reducing false positives from data uncertainty
+          </li>
+          <li>
+            <strong>Operational Efficiency:</strong> The threshold filters channels with trivial differences, 
+            focusing model update resources on areas with substantive topographic changes
+          </li>
+          <li>
+            <strong>Regulatory Relevance:</strong> The threshold aligns with typical floodplain mapping 
+            vertical accuracy standards and regulatory reporting precision
+          </li>
+        </ul>
+        
+      </section>
+
+      <!-- QUALITY ASSURANCE -->
+      <section>
+        <h2>6. Quality Assurance and Limitations</h2>
+        
+        <h3>6.1 Data Quality Considerations</h3>
+        <ul>
+          <li>
+            <strong>Coordinate System Consistency:</strong> All datasets are projected to a common coordinate 
+            reference system (CRS) before analysis to ensure spatial alignment
+          </li>
+          <li>
+            <strong>Temporal Consistency:</strong> Users should verify that DEM collection dates are appropriate 
+            for the comparison objective and that no major channel modifications occurred between collections
+          </li>
+          <li>
+            <strong>NoData Handling:</strong> Areas with missing elevation data in either DEM are excluded 
+            from statistics but documented in coverage metrics
+          </li>
+          <li>
+            <strong>Edge Effects:</strong> Buffered corridors near channel endpoints or lateral boundaries 
+            may exhibit reduced sample density
+          </li>
+        </ul>
+        
+        <h3>6.2 Methodological Limitations</h3>
+        <ul>
+          <li>
+            The analysis assumes DEMs are already in vertical datum alignment; systematic vertical datum 
+            differences will appear as bias and may lead to incorrect GO recommendations
+          </li>
+          <li>
+            The 12-foot outlier threshold may remove legitimate topographic features in channels with 
+            significant vertical drops (e.g., grade control structures, waterfalls)
+          </li>
+          <li>
+            The methodology does not account for seasonal or environmental factors affecting DEM collection 
+            (e.g., vegetation, water surface presence)
+          </li>
+          <li>
+            Statistical significance does not inherently indicate which DEM is more accurate; supplementary 
+            ground-truth data or survey information may be needed for validation
+          </li>
+        </ul>
+        
+        <h3>6.3 Validation Steps</h3>
+        <ol>
+          <li>Review spatial distribution of excluded outlier points for patterns indicating data quality issues</li>
+          <li>Compare min/max values against known channel characteristics to identify anomalous results</li>
+          <li>Visually inspect sample points overlaid on DEMs in areas flagged as significant</li>
+          <li>Consider running sensitivity analyses with alternative threshold values for critical channels</li>
+        </ol>
+      </section>
+
+      <!-- IMPLEMENTATION WORKFLOW
+      <section>
+        <h2>8. Recommended Implementation Workflow</h2>
+        
+        <ol>
+          <li>
+            <strong>Data Preparation:</strong> Assemble LOS DEM, MAAPNext DEM, and channel centerline layers; 
+            verify coordinate systems and spatial extents
+          </li>
+          <li>
+            <strong>Parameter Configuration:</strong> Configure analysis parameters (buffer = 30 ft, spacing = 5 ft, 
+            bias threshold = 0.5 ft, outlier tolerance = 12 ft)
+          </li>
+          <li>
+            <strong>Initial Run:</strong> Execute comparison for all channels or a representative pilot subset
+          </li>
+          <li>
+            <strong>Quality Review:</strong> Review HTML report and sample point layer; identify and investigate 
+            any unexpected patterns or anomalies
+          </li>
+          <li>
+            <strong>Decision Integration:</strong> Incorporate GO/NO-GO recommendations into model update 
+            prioritization schedule considering budget, schedule, and jurisdictional factors
+          </li>
+          <li>
+            <strong>Documentation:</strong> Archive comparison reports and sample point datasets as project 
+            records for future reference and model lineage tracking
+          </li>
+          <li>
+            <strong>Model Update Execution:</strong> For channels with GO recommendations, proceed with 
+            hydraulic model geometry updates using MAAPNext DEM
+          </li>
+          <li>
+            <strong>Post-Update Validation:</strong> Perform hydraulic model QA/QC to verify topographic 
+            updates produce reasonable changes in computed water surface elevations
+          </li>
+        </ol>
+      </section> -->
+
+      <!-- CONCLUSION -->
+      <section>
+        <h2>7. Conclusion</h2>
+        <p>
+          This methodology provides a systematic, statistically-grounded framework for making efficient and 
+          defensible decisions about hydraulic model topography updates. By comparing the LOS DEM and MAAPNext DEM 
+          at high spatial resolution and applying consistent significance criteria, the approach identifies 
+          channels where topographic changes materially impact model accuracy while filtering those where 
+          differences are negligible.
+        </p>
+        
+        <p>
+          The go/no-go decision framework enables resource-efficient model maintenance by focusing update 
+          efforts on areas with substantive change, while the comprehensive documentation and QA outputs 
+          support technical defensibility.
+        </p>
+        
+      </section>
+    </div>
+
+    <footer class="footer">
+      <p>
+        <strong>AtkinsRéalis & Harris County Flood Control District (HCFCD)</strong><br>
+        Watershed Planning Tool 2.0 – DEM Comparison Methodology<br>
+        Document Prepared: April 2026
+      </p>
+    </footer>
+  </article>
+</body>
+</html>
