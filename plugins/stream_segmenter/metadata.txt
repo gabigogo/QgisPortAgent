@@ -1,0 +1,19 @@
+[general]
+name=stream_segmenter
+qgisMinimumVersion=3.44
+qgisMaximumVersion=3.99
+description=Segments stream centerline features into equal-length intervals measured from the downstream endpoint, labelling each segment with a range label and a unique stream–segment identifier.
+version=0.1.0
+author=Gabriela Govea
+email=gabriela.govea@atkinsrealis.com
+about=Given a stream centerline layer (LineString or MultiLineString), this plugin divides each feature into equal-length intervals of a user-specified distance (default 1 mile) measured outward from the downstream endpoint. Each output segment receives three new attribute fields: a segment number (integer, 1 = most downstream), a human-readable range label (e.g. "0-1 mi"), and a unique stream–segment identifier (e.g. "Bear_Creek_mile_01"). Supports miles or kilometres, optional preservation of source attributes, and processing of selected features only.
+tracker=https://github.com/atkinsrealis/stream_segmenter/issues
+repository=https://github.com/atkinsrealis/stream_segmenter
+homepage=https://github.com/atkinsrealis/stream_segmenter
+category=Analysis
+icon=resources/icon.svg
+experimental=False
+deprecated=False
+hasProcessingProvider=True
+supportsQt6=True
+tags=hydrology,channel,centerline,segmentation,linear referencing,stream,watershed,hcfcd

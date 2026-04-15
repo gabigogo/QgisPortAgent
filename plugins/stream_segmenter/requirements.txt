@@ -1,0 +1,3 @@
+# Pinned for QGIS 3.44 / Python 3.12
+shapely>=2.0.0,<3.0
+openpyxl>=3.1.0,<4.0

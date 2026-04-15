@@ -143,7 +143,7 @@ def main() -> int:
         from processing.core.Processing import Processing
         import processing
 
-        from stream_segmenter.processing_provider.provider import (
+        from plugins.stream_segmenter.processing_provider.provider import (
             StreamSegmenterProvider,
         )
 

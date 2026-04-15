@@ -41,3 +41,4 @@ desktop.ini
 /dem_bathy_review
 /stream_segmenter
 /DEM Bathymetry Comparison Report.pdf
+/scripts/batch_set_channel_equals_unitno.py
