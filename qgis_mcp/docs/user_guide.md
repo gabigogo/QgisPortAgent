@@ -9,8 +9,8 @@ maps.
 
 ## Setup
 
-1. **Run `setup.ps1`** from the repo root to symlink the plugin into your QGIS
-   profile.
+1. **Run your platform setup script** from the repo root to symlink the plugin into your QGIS
+   profile (`setup.ps1` for PowerShell, `setup.cmd` for Command Prompt, or `bash ./setup.sh` for Linux/macOS).
 2. **Open QGIS** → Plugins → Manage and Install Plugins → enable "QGIS MCP".
 3. Click **QGIS MCP** in the Plugins menu (or toolbar) to open the dock widget.
 4. Click **Start Server**. The status label should show "Server: Running on port
@@ -38,9 +38,7 @@ the port in the dock widget spin box before clicking Start.
 
 In VS Code, switch to Copilot Agent mode and type:
 
-```
-@qgis-mcp Ping the QGIS server
-```
+```text`n@qgis-mcp Ping the QGIS server`n```
 
 You should see a response containing `{"pong": true}`.
 
@@ -52,8 +50,8 @@ list of 23 tools and workflow examples.
 ## Troubleshooting
 
 | Symptom | Fix |
-|---------|-----|
+| --------- | ----- |
 | "Connection refused" | Ensure QGIS is running and the plugin's server is started |
 | "Port already in use" | Change `QGIS_MCP_PORT` or stop the other process |
 | "AUTH_REQUIRED" from server | Enable auth in the MCP client by setting `QGIS_MCP_TOKEN`, or restart QGIS MCP with auth disabled |
-| Plugin not visible | Re-run `setup.ps1` as Administrator to create symlinks |
+| Plugin not visible | Re-run your platform setup script (`setup.ps1` or `setup.cmd` on Windows, `bash ./setup.sh` on Linux/macOS) to recreate plugin links |

@@ -116,7 +116,7 @@ A complete onboarding session should deliver:
 
 **Expected session shape:**
 1. Agent asks two to four discovery questions
-2. Agent checks readiness (`setup.ps1`, QGIS MCP plugin status, Agent mode)
+2. Agent checks readiness (`setup.ps1`/`setup.cmd`/`setup.sh`, QGIS MCP plugin status, Agent mode)
 3. Agent guides a first win (`@qgis-mcp Ping the QGIS server`)
 4. Agent routes to `@qgis-mcp`, `@new-plugin`, or `@migrate-arc`
 5. Agent provides exact next prompt and completion checklist

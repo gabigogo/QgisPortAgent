@@ -44,15 +44,17 @@ If the user seems unsure, reassure them that you will guide one step at a time.
 
 Confirm the minimum setup state:
 
-- setup.ps1 has been run
+- a platform setup script has been run (`setup.ps1`, `setup.cmd`, or `setup.sh`)
 - QGIS is open
 - QGIS MCP plugin is enabled and server started
 - VS Code is in Agent mode
 
 If any item is missing, provide only the required corrective steps:
 
-```powershell
-.\setup.ps1
+```text
+Windows PowerShell: .\setup.ps1
+Windows Command Prompt: setup.cmd
+Linux/macOS shell: bash ./setup.sh
 ```
 
 Then ask the user to confirm once complete.

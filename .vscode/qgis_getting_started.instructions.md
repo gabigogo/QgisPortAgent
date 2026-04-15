@@ -42,7 +42,7 @@ Assume many users are complete beginners.
 Ask concise questions to determine user state:
 
 1. "What do you want to do first: control QGIS, build a plugin, or migrate an ArcGIS tool?"
-2. "Have you already run setup.ps1 in this workspace?"
+2. "Have you already run a setup script (`setup.ps1`, `setup.cmd`, or `setup.sh`) in this workspace?"
 3. "Is QGIS open, and is the QGIS MCP plugin server started?"
 
 Then produce a short orientation summary:
@@ -67,7 +67,7 @@ Use this checklist:
 
 - QGIS 3.44 installed
 - VS Code in Agent mode
-- `setup.ps1` completed
+- one setup script completed (`setup.ps1`, `setup.cmd`, or `setup.sh`)
 - QGIS MCP plugin enabled and server started (for MCP workflows)
 - Optional: GitHub MCP token configured if GitHub tools are needed
 
@@ -76,8 +76,10 @@ If any item fails, provide exact corrective actions from README guidance.
 ### Standard Remediation Flow
 
 1. Run setup:
-   ```powershell
-   .\setup.ps1
+   ```text
+   Windows PowerShell: .\setup.ps1
+   Windows Command Prompt: setup.cmd
+   Linux/macOS shell: bash ./setup.sh
    ```
 2. In QGIS: enable `QGIS MCP` and click `Start Server`.
 3. Return to Copilot Agent mode and retry:
