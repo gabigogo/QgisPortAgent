@@ -42,9 +42,10 @@ bash ./setup.sh
 ```
 
 `setup.ps1`, `setup.cmd`, and `setup.sh` will:
+
 1. Auto-detect your QGIS Python interpreter and update VS Code settings
 2. Install [`uv`](https://docs.astral.sh/uv/) (Python package runner) if missing
-3. Optionally download the [GitHub MCP Server](https://github.com/github/github-mcp-server) binary
+3. Optionally download the [GitHub MCP Server](https://github.com/github/github-mcp-server) binary for manual workspace registration
 4. Link source plugins into your QGIS profile via the platform-specific `scripts/setup_plugins` helper
 
 ### Cross-platform plugin linking scripts
@@ -78,6 +79,15 @@ bash scripts/setup_plugins.sh --category all --include-legacy-generated
 3. Check: **QGIS MCP**, **stream_segmenter**, **dem_bathy_review**
 4. Click **QGIS MCP** in the Plugins menu → **Start Server**
 
+### Start the Workspace MCP Server in VS Code
+
+1. If `uv` was just installed while VS Code was already open, run **Developer: Reload Window** first.
+2. Open the Command Palette (`Ctrl+Shift+P`) and run **MCP: List Servers**.
+3. Find the `qgis` workspace server from `.vscode/mcp.json`.
+4. If prompted, confirm that you trust the server.
+5. If the server is disabled, enable it.
+6. If the server is stopped, start it.
+
 ### Switch to Agent Mode in VS Code
 
 1. Open Copilot Chat (`Ctrl+Alt+I`)
@@ -87,15 +97,15 @@ bash scripts/setup_plugins.sh --category all --include-legacy-generated
 
 ### First Test
 
-```
+```text
 @qgis-mcp Ping the QGIS server
 ```
 
-You should see `{"pong": true}` — you're connected!
+You should see `{"pong": true}`. If the agent appears to stall, run **MCP: List Servers** and confirm the `qgis` server is trusted and running.
 
 Prefer a guided walkthrough first?
 
-```
+```text
 @qgis-faq Walk me through QgisPortAgent and help me choose the right agent.
 ```
 
@@ -116,13 +126,13 @@ The onboarding agent checks setup, gets you a quick win, and routes you to `@qgi
 
 If you are new to this workspace, start here:
 
-```
+```text
 @qgis-faq I want a quick walkthrough of how to use these agents to build QGIS tools and maps.
 ```
 
 Typical walkthrough path:
 
-1. Validate setup (run one setup script, Agent mode, QGIS MCP server)
+1. Validate setup (run one setup script, start the QGIS MCP plugin, trust and start the `qgis` workspace MCP server)
 2. Achieve first success (`@qgis-mcp Ping the QGIS server`)
 3. Route to the correct specialist agent based on intent (`@qgis-mcp` for map control, `@new-plugin` for net-new plugin development, `@migrate-arc` for ArcGIS tool migration)
 4. Continue with an exact next prompt and checkpoints
@@ -179,7 +189,7 @@ They are defined in `.vscode/extensions.json`. The key ones are listed below.
 | Tool | Purpose | Install |
 |---|---|---|
 | **`uv`** | Python package runner — launches the MCP server | Auto-installed by `setup.ps1`, `setup.cmd`, or `setup.sh`, or [install manually](https://docs.astral.sh/uv/) |
-| **`github-mcp-server`** | Local Go binary for repo/issue/PR tools (optional) | Auto-downloaded by `setup.ps1`, `setup.cmd`, or `setup.sh` from [GitHub Releases](https://github.com/github/github-mcp-server/releases) |
+| **`github-mcp-server`** | Optional manual workspace server for repo/issue/PR tools. Copilot CLI already includes a built-in GitHub MCP server. | Auto-downloaded by `setup.ps1`, `setup.cmd`, or `setup.sh` if you want the manual workspace binary path |
 
 ---
 
@@ -191,21 +201,21 @@ The `@qgis-mcp` agent lets you control a running QGIS instance directly from Cop
 
 ### Architecture
 
-```
+```text
 VS Code (Copilot Agent Mode)
   └─ .vscode/mcp.json
-      ├─ spawns QGIS MCP server (uv run qgis_mcp_server.py)
-      │     └─ TCP socket → localhost:9876
-      │           └─ QGIS plugin (qgis_mcp) listens → executes PyQGIS
-    └─ spawns GitHub MCP server (github-mcp-server stdio)
-            └─ HTTPS → api.github.com
+  └─ spawns QGIS MCP server (uv run qgis_mcp_server.py)
+    └─ TCP socket → localhost:9876
+      └─ QGIS plugin (qgis_mcp) listens → executes PyQGIS
 ```
 
-All transports are **local (stdio)**. The only network calls are `localhost:9876` (never leaves machine) and `api.github.com` (standard GitHub API).
+The default `qgis` MCP flow is fully local. VS Code launches the workspace MCP server over **stdio**, and the MCP server connects to the QGIS plugin over `localhost:9876`.
 
 ### Quick Start — MCP
 
-```
+Before the first prompt, open **MCP: List Servers** in VS Code and confirm the `qgis` server is trusted and running.
+
+```text
 @qgis-mcp Ping the QGIS server
 @qgis-mcp Load project D:/projects/MyProject.qgz
 @qgis-mcp Show me the fields of the parcels layer
@@ -252,14 +262,93 @@ The MCP server includes reusable prompt templates:
 | `segment_streams` | Run stream segmenter batch pipeline |
 | `apply_graduated_style` | Apply graduated symbology to a numeric field |
 
-### GitHub MCP Server (Local)
+### GitHub MCP Server
 
-The optional GitHub MCP Server provides repo, issue, PR, and Actions tools via `api.github.com`. It runs as a **local Go binary** (no Docker required) using stdio transport — suitable for corporate environments where firewalls may block other MCP hosts.
+If you are using Copilot CLI, the GitHub MCP server is already built in with read-only tools enabled by default. You do not need this repo to install it.
 
-To use it:
-1. Run your platform setup script and answer **Y** when prompted to download
-2. Create a [fine-grained PAT](https://github.com/settings/personal-access-tokens/new) with: Contents (read), Issues (read/write), Pull Requests (read/write), Actions (read), Metadata (read)
-3. VS Code will prompt for the token when the GitHub MCP server starts
+Verify that the built-in server is available from an active Copilot CLI session:
+
+```text
+/mcp show github-mcp-server
+```
+
+If you want to customize the built-in server for a session, start Copilot CLI with the upstream flags described in the GitHub MCP docs:
+
+```bash
+copilot --add-github-mcp-toolset discussions
+copilot --add-github-mcp-toolset stargazers
+copilot --enable-all-github-mcp-tools
+```
+
+If you want to create a custom GitHub MCP configuration in Copilot CLI, the upstream guide recommends interactive setup from an active Copilot CLI session:
+
+```text
+/mcp add
+```
+
+That flow writes Copilot CLI MCP configuration to `~/.copilot/mcp-config.json`, not to this workspace's `.vscode/mcp.json`.
+
+Example Copilot CLI configuration using the hosted GitHub MCP server:
+
+```json
+{
+  "mcpServers": {
+    "github-mcp-server": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/",
+      "headers": {
+        "Authorization": "Bearer ${GITHUB_PERSONAL_ACCESS_TOKEN}"
+      }
+    }
+  }
+}
+```
+
+Server naming note: name the server `github-mcp-server` to replace the built-in server, or use a different name such as `github` to run a second configuration alongside it.
+
+### Optional Workspace-Managed GitHub MCP Binary
+
+This repo can still download the standalone `github-mcp-server` binary if you want to register GitHub MCP directly in the workspace instead of relying on Copilot CLI's built-in server.
+
+To use the manual workspace path:
+
+1. Run your platform setup script and answer **Y** when prompted to download the binary
+2. Create a [fine-grained PAT](https://github.com/settings/personal-access-tokens/new) with the scopes you need
+3. Open `.vscode/mcp.json` and add a `github` server entry, or use **MCP: Add Server**
+4. Start the new server from **MCP: List Servers** and provide the PAT when prompted
+
+Example combined `.vscode/mcp.json` with both `qgis` and `github`:
+
+```json
+{
+  "inputs": [
+    {
+      "type": "promptString",
+      "id": "github_token",
+      "description": "GitHub Personal Access Token",
+      "password": true
+    }
+  ],
+  "servers": {
+    "qgis": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "${workspaceFolder}/qgis_mcp/src",
+        "run",
+        "qgis_mcp_server.py"
+      ]
+    },
+    "github": {
+      "command": "${workspaceFolder}/.mcp/github-mcp-server.exe",
+      "args": ["stdio"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${input:github_token}"
+      }
+    }
+  }
+}
+```
 
 ---
 
@@ -632,9 +721,11 @@ QgisPortAgent/
 |---|---|---|
 | `Connection refused` on port 9876 | QGIS MCP plugin not started | In QGIS: **Plugins → QGIS MCP → Start Server** |
 | `uv: command not found` | `uv` not installed | Run your platform setup script (`setup.ps1`, `setup.cmd`, or `setup.sh`) or install via [docs.astral.sh/uv](https://docs.astral.sh/uv/) |
+| Agent stalls or never connects | VS Code `qgis` MCP server was not trusted, enabled, or started | Run **MCP: List Servers**, trust `qgis`, then enable/start it |
 | Agent says "no tools available" | VS Code < 1.101 | Upgrade VS Code (1.101+ required for MCP) |
 | `QGIS_MCP_PORT` ignored | Plugin reads env at start time | Restart QGIS after changing `.env` |
 | GitHub MCP returns 401 | Invalid or expired PAT | Re-create [fine-grained PAT](https://github.com/settings/personal-access-tokens/new) with correct scopes |
+| `uv` was installed but MCP still fails to start | VS Code has stale PATH state | Run **Developer: Reload Window** and start `qgis` again from **MCP: List Servers** |
 | Plugin not listed in QGIS | Symlink missing or broken | Re-run `scripts/setup_plugins.ps1` (Windows) or `scripts/setup_plugins.sh` (Linux/macOS) |
 | `SRE module mismatch` on launch | Google Cloud SDK pollutes `PYTHONPATH` | Clear `PYTHONPATH` and `PYTHONHOME` before launching QGIS |
 

@@ -44,6 +44,7 @@ Ask concise questions to determine user state:
 1. "What do you want to do first: control QGIS, build a plugin, or migrate an ArcGIS tool?"
 2. "Have you already run a setup script (`setup.ps1`, `setup.cmd`, or `setup.sh`) in this workspace?"
 3. "Is QGIS open, and is the QGIS MCP plugin server started?"
+4. "In VS Code, is the `qgis` MCP server trusted and running from `MCP: List Servers`?"
 
 Then produce a short orientation summary:
 
@@ -69,6 +70,7 @@ Use this checklist:
 - VS Code in Agent mode
 - one setup script completed (`setup.ps1`, `setup.cmd`, or `setup.sh`)
 - QGIS MCP plugin enabled and server started (for MCP workflows)
+- workspace `qgis` MCP server trusted and running in VS Code
 - Optional: GitHub MCP token configured if GitHub tools are needed
 
 If any item fails, provide exact corrective actions from README guidance.
@@ -82,7 +84,9 @@ If any item fails, provide exact corrective actions from README guidance.
    Linux/macOS shell: bash ./setup.sh
    ```
 2. In QGIS: enable `QGIS MCP` and click `Start Server`.
-3. Return to Copilot Agent mode and retry:
+3. In VS Code: run `MCP: List Servers`, trust `qgis`, then enable/start it.
+4. If `uv` was just installed while VS Code was already open, run `Developer: Reload Window`, then start `qgis` again from `MCP: List Servers`.
+5. Return to Copilot Agent mode and retry:
    ```text
    @qgis-mcp Ping the QGIS server
    ```
@@ -166,9 +170,10 @@ Recommended handoff prompt:
 Apply these checkpoints in order:
 
 1. **Connection refused**: Verify QGIS MCP plugin is running and port is correct.
-2. **Agent mode issues**: Confirm VS Code is in Agent mode and required extensions are installed.
-3. **Python launch issues (`SRE module mismatch`)**: clear `PYTHONPATH` and `PYTHONHOME` contamination before launching QGIS sessions.
-4. **Distance result anomalies**: confirm CRS units and spot-check geometry lengths against label fields (for example `mile_range`).
+2. **VS Code MCP startup**: Verify the workspace `qgis` MCP server is trusted, enabled, and running from `MCP: List Servers`.
+3. **Agent mode issues**: Confirm VS Code is in Agent mode and required extensions are installed.
+4. **Python launch issues (`SRE module mismatch`)**: clear `PYTHONPATH` and `PYTHONHOME` contamination before launching QGIS sessions.
+5. **Distance result anomalies**: confirm CRS units and spot-check geometry lengths against label fields (for example `mile_range`).
 
 Do not continue to deeper workflows until base connectivity and unit assumptions are confirmed.
 

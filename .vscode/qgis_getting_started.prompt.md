@@ -47,6 +47,7 @@ Confirm the minimum setup state:
 - a platform setup script has been run (`setup.ps1`, `setup.cmd`, or `setup.sh`)
 - QGIS is open
 - QGIS MCP plugin is enabled and server started
+- the workspace `qgis` MCP server is trusted and running from `MCP: List Servers`
 - VS Code is in Agent mode
 
 If any item is missing, provide only the required corrective steps:
@@ -76,8 +77,9 @@ If successful, acknowledge the checkpoint and continue.
 If unsuccessful, troubleshoot in this order:
 
 1. QGIS MCP server started?
-2. Correct port and environment?
-3. Agent mode enabled?
+2. Workspace `qgis` MCP server trusted and running from `MCP: List Servers`?
+3. Correct port and environment?
+4. Agent mode enabled?
 
 Retry the ping before moving on.
 

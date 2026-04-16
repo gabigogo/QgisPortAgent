@@ -103,9 +103,9 @@ if (Get-Command uv -ErrorAction SilentlyContinue) {
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
-# 3. Optionally download GitHub MCP Server binary
+# 3. Optionally download standalone GitHub MCP binary
 # ─────────────────────────────────────────────────────────────────────────────
-Write-Host "`n=== Step 3: GitHub MCP Server (optional) ===" -ForegroundColor Cyan
+Write-Host "`n=== Step 3: Standalone GitHub MCP binary (optional) ===" -ForegroundColor Cyan
 
 $McpDir = Join-Path $RepoRoot ".mcp"
 $McpBinary = Join-Path $McpDir "github-mcp-server.exe"
@@ -115,13 +115,16 @@ if (Test-Path $McpBinary) {
     Write-Host "  Already present: $McpBinary" -ForegroundColor Green
     $GhMcpInstalled = $true
 } else {
-    $install = Read-Host "  Download GitHub MCP Server for repo/issue/PR tools? (Y/n)"
+    Write-Host "  Copilot CLI already includes a built-in GitHub MCP server." -ForegroundColor DarkGray
+    $install = Read-Host "  Download the standalone github-mcp-server binary for manual workspace registration? (Y/n)"
     if ($install -ne 'n' -and $install -ne 'N') {
         if (-not (Test-Path $McpDir)) { New-Item -ItemType Directory -Path $McpDir -Force | Out-Null }
 
         Write-Host "  Fetching latest release info ..." -ForegroundColor Yellow
         $releaseInfo = Invoke-RestMethod "https://api.github.com/repos/github/github-mcp-server/releases/latest"
-        $asset = $releaseInfo.assets | Where-Object { $_.name -match 'windows_amd64.*\.zip$' } | Select-Object -First 1
+        $asset = $releaseInfo.assets | Where-Object {
+            $_.name -match '(?i)windows[_-](amd64|x86_64).*\.zip$'
+        } | Select-Object -First 1
 
         if ($asset) {
             $zipPath = Join-Path $McpDir "github-mcp-server.zip"
@@ -143,10 +146,10 @@ if (Test-Path $McpBinary) {
                 Write-Host "  WARNING: Download succeeded but exe not found." -ForegroundColor Yellow
             }
         } else {
-            Write-Host "  WARNING: Could not find Windows amd64 asset in latest release." -ForegroundColor Yellow
+            Write-Host "  WARNING: Could not find a compatible Windows x86_64/amd64 asset in the latest release." -ForegroundColor Yellow
         }
     } else {
-        Write-Host "  Skipped. GitHub MCP tools will not be available." -ForegroundColor DarkGray
+        Write-Host "  Skipped. Copilot CLI still has its built-in GitHub MCP server; this only skips the standalone workspace binary." -ForegroundColor DarkGray
     }
 }
 
@@ -199,7 +202,7 @@ if (Test-Path $EnvFile) {
 } elseif (Test-Path $EnvExample) {
     Copy-Item $EnvExample $EnvFile
     Write-Host "  Created .env from .env.example" -ForegroundColor Green
-    Write-Host "  Edit .env to add your GitHub PAT (optional, for GitHub MCP tools)." -ForegroundColor Yellow
+    Write-Host "  Edit .env to add your GitHub PAT if you plan to use a manual workspace GitHub MCP server." -ForegroundColor Yellow
 } else {
     Write-Host "  .env.example not found - skipping .env creation." -ForegroundColor Yellow
 }
@@ -214,7 +217,7 @@ function StatusIcon($ok) { if ($ok) { return [char]0x2713 } else { return [char]
 $rows = @(
     @{ Component = "QGIS Python";     Status = [bool]$QgisPython;    Detail = "$QgisPython" },
     @{ Component = "uv";              Status = [bool](Get-Command uv -ErrorAction SilentlyContinue); Detail = "$uvVer" },
-    @{ Component = "GitHub MCP";      Status = $GhMcpInstalled;      Detail = if ($GhMcpInstalled) { $McpBinary } else { "Not installed" } },
+    @{ Component = "GitHub MCP bin";  Status = $GhMcpInstalled;      Detail = if ($GhMcpInstalled) { $McpBinary } else { "Not installed (Copilot CLI built-in still available)" } },
     @{ Component = "Plugin symlinks"; Status = ($SymlinksCreated.Count -gt 0); Detail = ($SymlinksCreated -join ", ") },
     @{ Component = ".env";            Status = (Test-Path $EnvFile); Detail = if (Test-Path $EnvFile) { "Exists" } else { "Missing" } }
 )
@@ -225,9 +228,13 @@ foreach ($r in $rows) {
     Write-Host ("  {0} {1,-18} {2}" -f $icon, $r.Component, $r.Detail) -ForegroundColor $color
 }
 
+Write-Host "  Note: Copilot CLI includes a built-in GitHub MCP server. This setup step only manages the optional standalone workspace binary." -ForegroundColor DarkGray
+
 Write-Host "`n===  Next Steps  ===" -ForegroundColor Cyan
 Write-Host "  1. Open QGIS -> Plugins -> Manage and Install -> Enable 'QGIS MCP'" -ForegroundColor White
 Write-Host "  2. In QGIS, click 'QGIS MCP' in the Plugins menu -> Start Server" -ForegroundColor White
-Write-Host "  3. Open VS Code -> Copilot Chat (Ctrl+Alt+I) -> Switch to Agent mode" -ForegroundColor White
-Write-Host "  4. Type: @qgis-mcp Ping the QGIS server" -ForegroundColor White
+Write-Host "  3. If uv was just installed while VS Code was open, run Developer: Reload Window" -ForegroundColor White
+Write-Host "  4. In VS Code, run MCP: List Servers -> trust/start 'qgis'" -ForegroundColor White
+Write-Host "  5. Open VS Code -> Copilot Chat (Ctrl+Alt+I) -> Switch to Agent mode" -ForegroundColor White
+Write-Host "  6. Type: @qgis-mcp Ping the QGIS server" -ForegroundColor White
 Write-Host ""

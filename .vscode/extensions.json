@@ -5,8 +5,6 @@
     "recommendations": [
 
         // ── Required ──────────────────────────────────────────────────────────
-        // GitHub Copilot — the AI engine that powers all agents in this repo.
-        "GitHub.copilot",
         // GitHub Copilot Chat — enables Agent mode (@migrate-arc, @new-plugin).
         "GitHub.copilot-chat",
         // Python — syntax highlighting, linting, debugging, virtual-env picker.

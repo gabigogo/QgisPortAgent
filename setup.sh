@@ -255,14 +255,15 @@ else
     fi
 fi
 
-print_step "Step 3: GitHub MCP Server (optional)"
+print_step "Step 3: Standalone GitHub MCP binary (optional)"
 if [[ -f "$GH_MCP_BINARY" ]]; then
     echo "  Already present: $GH_MCP_BINARY"
     GH_MCP_INSTALLED=1
 else
-    read -r -p "  Download GitHub MCP Server for repo/issue/PR tools? (Y/n) " install_choice
+    echo "  Copilot CLI already includes a built-in GitHub MCP server."
+    read -r -p "  Download the standalone github-mcp-server binary for manual workspace registration? (Y/n) " install_choice
     if [[ "${install_choice:-Y}" =~ ^[Nn]$ ]]; then
-        echo "  Skipped. GitHub MCP tools will not be available."
+        echo "  Skipped. Copilot CLI still has its built-in GitHub MCP server; this only skips the standalone workspace binary."
     else
         download_github_mcp || true
     fi
@@ -305,7 +306,7 @@ if [[ -f "$ENV_FILE" ]]; then
 elif [[ -f "$ENV_EXAMPLE" ]]; then
     cp "$ENV_EXAMPLE" "$ENV_FILE"
     echo "  Created .env from .env.example"
-    echo "  Edit .env to add your GitHub PAT (optional, for GitHub MCP tools)."
+    echo "  Edit .env to add your GitHub PAT if you plan to use a manual workspace GitHub MCP server."
 else
     echo "  .env.example not found - skipping .env creation."
 fi
@@ -313,13 +314,17 @@ fi
 print_step "Setup Summary"
 status_line "QGIS Python" $([[ -n "$QGIS_PYTHON" ]] && echo 1 || echo 0) "$QGIS_PYTHON"
 status_line "uv" $([[ -n "$(command -v uv 2>/dev/null || true)" ]] && echo 1 || echo 0) "$UV_VERSION"
-status_line "GitHub MCP" "$GH_MCP_INSTALLED" "$([[ "$GH_MCP_INSTALLED" -eq 1 ]] && echo "$GH_MCP_BINARY" || echo "Not installed")"
+status_line "GitHub MCP bin" "$GH_MCP_INSTALLED" "$([[ "$GH_MCP_INSTALLED" -eq 1 ]] && echo "$GH_MCP_BINARY" || echo "Not installed (Copilot CLI built-in still available)")"
 status_line "Plugin links" $([[ "$PLUGIN_LINKED_COUNT" -gt 0 ]] && echo 1 || echo 0) "$PLUGIN_LINKED_COUNT linked ($PLUGINS_DIR)"
 status_line ".env" $([[ -f "$ENV_FILE" ]] && echo 1 || echo 0) "$([[ -f "$ENV_FILE" ]] && echo "Exists" || echo "Missing")"
 
+echo "  Note: Copilot CLI includes a built-in GitHub MCP server. This setup step only manages the optional standalone workspace binary."
+
 print_step "Next Steps"
 echo "  1. Open QGIS -> Plugins -> Manage and Install -> Enable 'QGIS MCP'"
-echo "  2. In QGIS, click 'QGIS MCP' in the Plugins menu -> Start Server"
-echo "  3. Open VS Code -> Copilot Chat -> Switch to Agent mode"
-echo "  4. Type: @qgis-mcp Ping the QGIS server"
+echo "  2. In QGIS, click 'QGIS MCP' in the menu -> Click Start Server"
+echo "  3. If uv was just installed while VS Code was open, run Developer: Reload Window"
+echo "  4. In VS Code, run MCP: List Servers -> trust/start 'qgis'"
+echo "  5. Open VS Code -> Copilot Chat -> Switch to Agent mode"
+echo "  6. Type: @qgis-mcp Ping the QGIS server"
 echo
