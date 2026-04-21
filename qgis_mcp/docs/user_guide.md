@@ -38,7 +38,8 @@ the port in the dock widget spin box before clicking Start.
 
 In VS Code, switch to Copilot Agent mode and type:
 
-```text`n@qgis-mcp Ping the QGIS server`n```
+```@qgis-mcp Ping the QGIS server```
+
 
 You should see a response containing `{"pong": true}`.
 
